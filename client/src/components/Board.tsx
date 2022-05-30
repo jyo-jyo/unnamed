@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { BoardContainer } from "./Board.style";
 
 const Board = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -8,8 +9,8 @@ const Board = () => {
   useEffect(() => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
-    canvas.width = window.innerWidth * 0.5;
-    canvas.height = window.innerHeight;
+    canvas.height = canvas.parentElement?.offsetHeight ?? 500;
+    canvas.width = canvas.parentElement?.offsetWidth ?? 500;
     const context = canvas.getContext("2d");
     if (context) {
       contextRef.current = context;
@@ -39,14 +40,15 @@ const Board = () => {
   };
 
   return (
-    <div>
+    <BoardContainer>
       <canvas
         ref={canvasRef}
         onMouseDown={startDrawing}
-        onMouseUp={stopDrawing}
         onMouseMove={drawing}
+        onMouseUp={stopDrawing}
+        onMouseLeave={stopDrawing}
       ></canvas>
-    </div>
+    </BoardContainer>
   );
 };
 
