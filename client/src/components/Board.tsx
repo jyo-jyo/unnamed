@@ -26,16 +26,15 @@ const Board = () => {
   };
 
   const drawing = ({ nativeEvent }: { nativeEvent: MouseEvent }) => {
-    const { offsetX, offsetY } = nativeEvent;
     const ctx = contextRef.current;
-    if (ctx) {
-      if (!isDrawing) {
-        ctx.beginPath();
-        ctx.moveTo(offsetX, offsetY);
-      } else {
-        ctx.lineTo(offsetX, offsetY);
-        ctx.stroke();
-      }
+    if (!ctx) return;
+    const { offsetX, offsetY } = nativeEvent;
+    if (!isDrawing) {
+      ctx.beginPath();
+      ctx.moveTo(offsetX, offsetY);
+    } else {
+      ctx.lineTo(offsetX, offsetY);
+      ctx.stroke();
     }
   };
 
