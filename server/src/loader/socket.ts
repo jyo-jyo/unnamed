@@ -48,6 +48,19 @@ const socketLoader = (server: any, app: any): any => {
       socket.emit(CREATE_SUCCESS, roomCode);
     });
 
+    socket.on(JOIN_ROOM, ({ roomCode }: { roomCode: string }) => {
+      if (!(roomCode in rooms)) return socket.emit(EXIST_ROOM_ERROR);
+      if (!rooms[roomCode].hostId) rooms[roomCode].hostId = socket.id;
+      socket.join(roomCode);
+      rooms[roomCode].users.push(socket.id);
+      socket.emit(ENTER_OTHER_USER, rooms[roomCode].users);
+      io.to(roomCode).emit(ENTER_ONE_USER, socket.id);
+    });
+
+    socket.on(DRAWING, ({ roomCode, drawingData }) => {
+      io.to(roomCode).emit(OTHER_DRAWING, drawingData);
+    });
+
     socket.on("disconnect", () => {
       console.log("disconnect socket!!" + socket.id);
     });
