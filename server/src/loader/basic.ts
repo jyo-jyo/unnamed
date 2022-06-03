@@ -4,8 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import session from "express-session";
 
-const FRONT_BASE_URL = "localhost";
-const SESSION_SECRET = "1234";
+import { FRONT_BASE_URL, SESSION_SECRET } from "../constants/constant";
 
 const basicLoader = (app: any): any => {
   app.use(
