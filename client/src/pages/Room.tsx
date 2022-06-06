@@ -5,7 +5,7 @@ import Socket from "../socket";
 const Room = () => {
   const { roomCode } = useParams();
   const [users, setUsers] = useState<any>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const addUser = (user: any) => {
     setUsers((prev: any) => [...prev, user]);
@@ -19,20 +19,21 @@ const Room = () => {
     if (!roomCode) return;
     Socket.connect();
     const socket = Socket.room({ addUser, addUsers });
-    socket.joinRoom(roomCode);
+    socket.joinRoom(roomCode.slice(1));
 
     return () => {
       socket.disconnecting();
+      // Socket.disconnect();
     };
   }, [roomCode]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (!isLoading) return;
     if (users.length === 0) return;
     setIsLoading(true);
   }, [users]);
 
-  return isLoading ? <></> : <Board />;
+  return isLoading ? <Board /> : <></>;
 };
 
 export default Room;
