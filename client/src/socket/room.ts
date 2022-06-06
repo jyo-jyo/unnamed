@@ -9,7 +9,7 @@ import {
 const room = (socket: Socket) => (closure: any) => {
   const { addUser, addUsers } = closure;
   socket.on(EXIST_ROOM_ERROR, () => {
-    alert("");
+    alert(EXIST_ROOM_ERROR);
   });
 
   socket.on(ENTER_ONE_USER, (socketId) => {
@@ -20,7 +20,7 @@ const room = (socket: Socket) => (closure: any) => {
     addUsers(users);
   });
 
-  const joinRoom = (roomCode: string) => socket.emit(JOIN_ROOM, roomCode);
+  const joinRoom = (roomCode: string) => socket.emit(JOIN_ROOM, { roomCode });
 
   const disconnecting = () => {
     socket.off(EXIST_ROOM_ERROR);
