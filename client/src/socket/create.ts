@@ -5,7 +5,6 @@ const create = (socket: Socket) => (closure: any) => {
   const { joining } = closure;
 
   socket.on(CREATE_SUCCESS, (roomCode: string) => {
-    console.log("ddd");
     joining(roomCode);
   });
 
