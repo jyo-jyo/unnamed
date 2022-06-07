@@ -10,6 +10,7 @@ import {
   OTHER_DRAWING,
   EXIST_ROOM_ERROR,
   CREATE_SUCCESS,
+  ROOM_LIST,
 } from "../constants/socket";
 
 export interface RoomInfo {
@@ -63,7 +64,26 @@ const socketLoader = (server: any, app: any): any => {
   io.on("connection", (socket: Socket): void => {
     console.log("socket connection!!", socket.id);
 
-    socket.on(CREATE_ROOM, () => {
+    socket.on(ROOM_LIST, () => {
+      const roomsInfo = Object.keys(rooms).reduce(
+        (acc: RoomInfoType, roomCode) => {
+          const room = rooms[roomCode];
+          acc[roomCode] = {
+            roomName: room.roomSettings.roomName,
+            numberOfUser: room.users.length,
+            maximumOfUser: room.roomSettings.maximumOfUser,
+            totalRound: room.roomSettings.totalRound,
+            isPlaying: room.gameState.isPlaying,
+            isLocked: room.roomSettings.isLocked,
+          };
+          return acc;
+        },
+        {}
+      );
+      socket.emit(ROOM_LIST, roomsInfo);
+    });
+
+    socket.on(CREATE_ROOM, ({ roomSettings }) => {
       const roomCode = createRoomCode(rooms);
       rooms[roomCode] = {
         hostId: null,
@@ -75,10 +95,12 @@ const socketLoader = (server: any, app: any): any => {
         },
         roomSettings,
       };
+      console.log(roomCode);
       socket.emit(CREATE_SUCCESS, roomCode);
     });
 
     socket.on(JOIN_ROOM, ({ roomCode }: { roomCode: string }) => {
+      console.log(roomCode, socket.id);
       if (!(roomCode in rooms)) return socket.emit(EXIST_ROOM_ERROR);
       if (!rooms[roomCode].hostId) rooms[roomCode].hostId = socket.id;
       socket.join(roomCode);
