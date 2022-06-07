@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import RoomList from "../components/Lobby/RoomList";
 import Socket from "../socket";
 export interface RoomInfo {
   roomName: string;
@@ -16,20 +17,32 @@ export interface RoomInfoType {
 const Lobby = () => {
   const nav = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    Socket.connect();
-    return () => {
-      Socket.disconnect();
-    };
-  }, []);
+  const socket = useRef<any>();
 
   const joining = (roomCode: string) => {
     nav(`/room:${roomCode}`);
   };
 
+  useEffect(() => {
+    if (socket.current) return;
+    socket.current = Socket.create({ joining });
+    Socket.connect();
+    return () => {
+      // console.log("return");
+      // socket.current.disconnecting();
+      // Socket.disconnect();
+    };
+  }, []);
+
   const createRoom = () => {
-    Socket.create({ joining }).createRoom();
+    // TODO: roomSetting
+    socket.current.createRoom({
+      roomName: "roomName",
+      maximumOfUser: 10,
+      totalRound: 10,
+      isLocked: false,
+      password: "",
+    });
   };
 
   const joinRoom = () => {
@@ -42,11 +55,16 @@ const Lobby = () => {
   };
 
   return (
-    <div>
-      <input ref={inputRef}></input>
-      <button onClick={createRoom}>생성</button>
-      <button onClick={joinRoom}>입장</button>
-    </div>
+    <>
+      <div>
+        <input ref={inputRef} placeholder='방코드를 입력해주세요'></input>
+        <button onClick={createRoom}>생성</button>
+        <button onClick={joinRoom}>입장</button>
+      </div>
+      <div>
+        <RoomList />
+      </div>
+    </>
   );
 };
 
