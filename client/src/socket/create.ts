@@ -8,7 +8,8 @@ const create = (socket: Socket) => (closure: any) => {
     joining(roomCode);
   });
 
-  const createRoom = () => socket.emit(CREATE_ROOM);
+  const createRoom = (roomSettings: Object) =>
+    socket.emit(CREATE_ROOM, { roomSettings });
 
   const disconnecting = () => {
     socket.off(CREATE_SUCCESS);

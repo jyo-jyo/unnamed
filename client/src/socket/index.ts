@@ -1,9 +1,10 @@
 import io from "socket.io-client";
-
 import { BACK_BASE_URL } from "../constants/constant";
-import room from "./room";
-import create from "./create";
+import join from "./join";
+import rooms from "./rooms";
 import drawing from "./drawing";
+import create from "./create";
+
 const Socket = () => {
   const socket = io(BACK_BASE_URL, {
     transports: ["websocket"],
@@ -17,7 +18,8 @@ const Socket = () => {
     connect: () => socket.connect(),
     disconnect: () => socket.disconnect(),
     create: create(socket),
-    room: room(socket),
+    rooms: rooms(socket),
+    join: join(socket),
     drawing: drawing(socket),
   };
 };
