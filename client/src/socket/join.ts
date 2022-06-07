@@ -6,7 +6,7 @@ import {
   ENTER_OTHER_USER,
 } from "../constants/socket";
 
-const room = (socket: Socket) => (closure: any) => {
+const join = (socket: Socket) => (closure: any) => {
   const { addUser, addUsers } = closure;
   socket.on(EXIST_ROOM_ERROR, () => {
     alert(EXIST_ROOM_ERROR);
@@ -24,9 +24,11 @@ const room = (socket: Socket) => (closure: any) => {
 
   const disconnecting = () => {
     socket.off(EXIST_ROOM_ERROR);
+    socket.off(ENTER_ONE_USER);
+    socket.off(ENTER_OTHER_USER);
   };
 
   return { joinRoom, disconnecting };
 };
 
-export default room;
+export default join;
