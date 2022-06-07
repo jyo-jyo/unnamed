@@ -12,10 +12,34 @@ import {
   CREATE_SUCCESS,
 } from "../constants/socket";
 
+export interface RoomInfo {
+  roomName: string;
+  numberOfUser: number;
+  maximumOfUser: number;
+  totalRound: number;
+  isPlaying: boolean;
+  isLocked: boolean;
+}
+export interface RoomInfoType {
+  [roomCode: string]: RoomInfo;
+}
+
 interface RoomType {
   [roomCode: string]: {
     hostId: string | null;
     users: string[];
+    gameState: {
+      isPlaying: boolean;
+      currOrder: number;
+      currRound: number;
+    };
+    roomSettings: {
+      roomName: string;
+      maximumOfUser: number;
+      totalRound: number;
+      isLocked: boolean;
+      password: string;
+    };
   };
 }
 const createRoomCode = (rooms: RoomType) => {
@@ -44,6 +68,12 @@ const socketLoader = (server: any, app: any): any => {
       rooms[roomCode] = {
         hostId: null,
         users: [],
+        gameState: {
+          isPlaying: false,
+          currOrder: 0,
+          currRound: 0,
+        },
+        roomSettings,
       };
       socket.emit(CREATE_SUCCESS, roomCode);
     });

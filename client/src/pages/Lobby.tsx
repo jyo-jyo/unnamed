@@ -1,6 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Socket from "../socket";
+export interface RoomInfo {
+  roomName: string;
+  numberOfUser: number;
+  maximumOfUser: number;
+  totalRound: number;
+  isPlaying: boolean;
+  isLocked: boolean;
+}
+export interface RoomInfoType {
+  [roomCode: string]: RoomInfo;
+}
+
 const Lobby = () => {
   const nav = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
