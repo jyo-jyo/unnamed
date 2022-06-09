@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import { ModalContainer } from "./Modal.style";
 
-const Modal = ({ children }: any) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Modal = ({
+  isOpen,
+  closeModal,
+  children,
+}: {
+  isOpen: boolean;
+  closeModal: Function;
+  children: JSX.Element;
+}) => {
   return (
     <ModalContainer isOpen={isOpen}>
       <div>
-        <text></text>
-        <button onClick={() => setIsOpen(false)}>X</button>
+        <button onClick={() => closeModal()}>X</button>
       </div>
       <div>{children}</div>
     </ModalContainer>

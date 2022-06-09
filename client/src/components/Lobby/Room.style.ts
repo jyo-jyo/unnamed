@@ -9,6 +9,7 @@ export const RoomContainer = styled.div<{ isAccessible: boolean }>`
   margin: 5px;
 
   display: flex;
+  flex: 1 1 1;
   flex-direction: column;
   justify-content: center;
 

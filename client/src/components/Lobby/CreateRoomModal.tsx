@@ -8,7 +8,15 @@ import {
 } from "./CreateRoomModal.style";
 import { USER_OPTIONS, ROUND_OPTIONS } from "../../constants/constant";
 
-const CreateRoomModal = ({ createRoom }: { createRoom: Function }) => {
+const CreateRoomModal = ({
+  isOpen,
+  closeModal,
+  createRoom,
+}: {
+  isOpen: boolean;
+  closeModal: Function;
+  createRoom: Function;
+}) => {
   const roomName = useRef<HTMLInputElement>(null);
   const [maximumOfUser, setMaximum] = useState<number>();
   const [totalRound, setRound] = useState<number>();
@@ -36,7 +44,7 @@ const CreateRoomModal = ({ createRoom }: { createRoom: Function }) => {
     }
   };
   return (
-    <Modal>
+    <Modal isOpen={isOpen} closeModal={closeModal}>
       <CreateRoomModalContainer>
         <InputBox>
           <text>방제목</text>
