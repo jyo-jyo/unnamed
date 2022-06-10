@@ -11,6 +11,8 @@ import {
   EXIST_ROOM_ERROR,
   CREATE_SUCCESS,
   ROOM_LIST,
+  EXIT_ROOM,
+  EXIT_USER,
 } from "../constants/socket";
 
 export interface RoomInfo {
@@ -105,12 +107,25 @@ const socketLoader = (server: any, app: any): any => {
       if (!rooms[roomCode].hostId) rooms[roomCode].hostId = socket.id;
       socket.join(roomCode);
       rooms[roomCode].users.push(socket.id);
-      socket.emit(ENTER_OTHER_USER, rooms[roomCode].users);
+      socket.emit(ENTER_OTHER_USER, rooms[roomCode].users, rooms[roomCode]);
       io.to(roomCode).emit(ENTER_ONE_USER, socket.id);
     });
 
     socket.on(DRAWING, ({ roomCode, drawingData }) => {
       io.to(roomCode).emit(OTHER_DRAWING, drawingData);
+    });
+
+    socket.on(EXIT_ROOM, ({ roomCode }) => {
+      if (!(roomCode in rooms)) return socket.emit(EXIST_ROOM_ERROR);
+      // TODO: 방장권한, 게임이 진행 중인 경우...
+      socket.leave(roomCode);
+      const room = rooms[roomCode];
+      room.users = room.users.filter((id) => id !== socket.id);
+      if (room.users.length === 0) {
+        delete rooms[roomCode];
+        return;
+      }
+      io.to(roomCode).emit(EXIT_USER, socket.id);
     });
 
     socket.on("disconnect", () => {

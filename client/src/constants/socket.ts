@@ -8,6 +8,8 @@ export const JOIN_ROOM = "JOIN_ROOM";
 export const ENTER_ONE_USER = "ENTER_ONE_USER";
 export const ENTER_OTHER_USER = "ENTER_OTHER_USER";
 export const EXIST_ROOM_ERROR = "EXIST_ROOM_ERROR";
+export const EXIT_USER = "EXIT_USER";
+export const EXIT_ROOM = "EXIT_ROOM";
 
 // drawing
 export const DRAWING = "DRAWING";
