@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BoardContainer } from "./Board.style";
-import Socket from "../socket";
+import Socket from "../../socket";
 
 const Board = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
