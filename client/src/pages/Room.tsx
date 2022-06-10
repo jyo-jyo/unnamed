@@ -41,6 +41,9 @@ const Room = () => {
   };
 
   const exitRoom = () => {
+    if (!roomCode) return;
+    socket.current.exitRoom(roomCode.slice(1));
+    nav(-1);
   };
 
   useEffect(() => {
