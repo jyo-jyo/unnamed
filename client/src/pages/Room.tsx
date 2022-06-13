@@ -40,16 +40,21 @@ const Room = () => {
     setRoomInfo(roomInfo);
   };
 
+  const back = () => {
+    socket.current.disconnecting();
+    nav(-1);
+  };
+
   const exitRoom = () => {
     if (!roomCode) return;
     socket.current.exitRoom(roomCode.slice(1));
-    nav(-1);
+    back();
   };
 
   useEffect(() => {
     if (!roomCode) return;
     if (socket.current) return;
-    socket.current = Socket.join({ addUser, initUsers, loadRoomInfo });
+    socket.current = Socket.join({ addUser, initUsers, loadRoomInfo, back });
     socket.current.joinRoom(roomCode.slice(1));
 
     return () => {
@@ -58,12 +63,14 @@ const Room = () => {
   }, []);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (!isLoading) return;
     if (users.length === 0) return;
-    setIsLoading(true);
+    setIsLoading(false);
   }, [users]);
 
   return isLoading ? (
+    <></>
+  ) : (
     <>
       <div>
         <div>
@@ -76,8 +83,6 @@ const Room = () => {
       </div>
       <Board />
     </>
-  ) : (
-    <></>
   );
 };
 

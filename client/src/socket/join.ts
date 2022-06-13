@@ -1,6 +1,7 @@
 import { Socket } from "socket.io-client";
 import {
   EXIST_ROOM_ERROR,
+  FULL_ROOM_ERROR,
   JOIN_ROOM,
   ENTER_ONE_USER,
   ENTER_OTHER_USER,
@@ -9,10 +10,16 @@ import {
 } from "../constants/socket";
 
 const join = (socket: Socket) => (closure: any) => {
-  const { addUser, initUsers, loadRoomInfo } = closure;
+  const { addUser, initUsers, loadRoomInfo, back } = closure;
 
   socket.on(EXIST_ROOM_ERROR, () => {
+    back();
     alert(EXIST_ROOM_ERROR);
+  });
+
+  socket.on(FULL_ROOM_ERROR, () => {
+    back();
+    alert(FULL_ROOM_ERROR);
   });
 
   socket.on(ENTER_ONE_USER, (socketId) => {
@@ -37,6 +44,7 @@ const join = (socket: Socket) => (closure: any) => {
 
   const disconnecting = () => {
     socket.off(EXIST_ROOM_ERROR);
+    socket.off(FULL_ROOM_ERROR);
     socket.off(ENTER_ONE_USER);
     socket.off(ENTER_OTHER_USER);
     socket.off(EXIT_USER);
