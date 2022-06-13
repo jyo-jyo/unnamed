@@ -8,6 +8,7 @@ import {
   ENTER_OTHER_USER,
   DRAWING,
   OTHER_DRAWING,
+  FULL_ROOM_ERROR,
   EXIST_ROOM_ERROR,
   CREATE_SUCCESS,
   ROOM_LIST,
@@ -102,12 +103,14 @@ const socketLoader = (server: any, app: any): any => {
     });
 
     socket.on(JOIN_ROOM, ({ roomCode }: { roomCode: string }) => {
-      console.log(roomCode, socket.id);
       if (!(roomCode in rooms)) return socket.emit(EXIST_ROOM_ERROR);
-      if (!rooms[roomCode].hostId) rooms[roomCode].hostId = socket.id;
+      const room = rooms[roomCode];
+      if (!room.hostId) room.hostId = socket.id;
+      if (room.users.length === room.roomSettings.maximumOfUser)
+        return socket.emit(FULL_ROOM_ERROR);
       socket.join(roomCode);
-      rooms[roomCode].users.push(socket.id);
-      socket.emit(ENTER_OTHER_USER, rooms[roomCode].users, rooms[roomCode]);
+      room.users.push(socket.id);
+      socket.emit(ENTER_OTHER_USER, room.users, room);
       io.to(roomCode).emit(ENTER_ONE_USER, socket.id);
     });
 
