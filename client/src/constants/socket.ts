@@ -18,3 +18,5 @@ export const OTHER_DRAWING = "OTHER_DRAWING";
 
 // game
 export const NEXT_TURN = "NEXT_TURN";
+export const START_MY_TURN = "START_MY_TURN";
+export const END_MY_TURN = "END_MY_TURN";
