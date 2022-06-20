@@ -18,6 +18,8 @@ export const DRAWING = "DRAWING";
 export const OTHER_DRAWING = "OTHER_DRAWING";
 
 // game
+export const START_GAME = "START_GAME";
+export const READY_ERROR = "READY_ERROR";
 export const NEXT_TURN = "NEXT_TURN";
 export const START_MY_TURN = "START_MY_TURN";
 export const END_MY_TURN = "END_MY_TURN";

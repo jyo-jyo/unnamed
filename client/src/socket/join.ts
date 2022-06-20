@@ -8,6 +8,8 @@ import {
   TOGGLE_READY,
   EXIT_USER,
   EXIT_ROOM,
+  START_GAME,
+  READY_ERROR,
 } from "../constants/socket";
 import { UserType } from "../pages/Room";
 
@@ -37,13 +39,16 @@ const join = (socket: Socket) => (closure: any) => {
     setUsers((prev: UserType[]) => prev.filter(({ id }) => id !== exitId));
   });
 
-  socket.on(TOGGLE_READY, ({ id, isReady }) => {
-    setUsers((prev: UserType[]) =>
-      prev.map((user) => {
-        if (user.id === id) user.isReady = isReady;
-        return user;
-      })
-    );
+  socket.on(TOGGLE_READY, (users) => {
+    setUsers(users);
+  });
+
+  socket.on(READY_ERROR, () => {
+    alert(READY_ERROR);
+  });
+
+  socket.on(START_GAME, () => {
+    alert(START_GAME);
   });
 
   const joinRoom = (roomCode: string) => socket.emit(JOIN_ROOM, { roomCode });
@@ -56,6 +61,8 @@ const join = (socket: Socket) => (closure: any) => {
   const ready = (roomCode: string, isReady: boolean) =>
     socket.emit(TOGGLE_READY, { roomCode, isReady });
 
+  const startGame = (roomCode: string) => socket.emit(START_GAME, { roomCode });
+
   const disconnecting = () => {
     socket.off(EXIST_ROOM_ERROR);
     socket.off(FULL_ROOM_ERROR);
@@ -64,7 +71,7 @@ const join = (socket: Socket) => (closure: any) => {
     socket.off(EXIT_USER);
   };
 
-  return { joinRoom, exitRoom, ready, disconnecting };
+  return { joinRoom, exitRoom, ready, startGame, disconnecting };
 };
 
 export default join;

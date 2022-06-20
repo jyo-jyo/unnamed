@@ -36,6 +36,8 @@ const Room = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const socket = useRef<any>();
 
+  const getRoomCode = () => roomCode?.slice(1);
+
   const back = () => {
     socket.current.disconnecting();
     nav(-1);
@@ -43,17 +45,19 @@ const Room = () => {
 
   const exitRoom = () => {
     if (!roomCode) return;
-    socket.current.exitRoom(roomCode.slice(1));
+    socket.current.exitRoom(getRoomCode());
     back();
   };
 
   const toggleMyReady = () => {
     setIsReady((prev) => {
       const isReady = !prev;
-      socket.current.ready(roomCode?.slice(1), isReady);
+      socket.current.ready(getRoomCode(), isReady);
       return isReady;
     });
   };
+
+  const isHost = () => roomInfo?.hostId === Socket.getSID();
 
   useEffect(() => {
     if (!roomCode) return;
@@ -63,7 +67,7 @@ const Room = () => {
       setRoomInfo,
       back,
     });
-    socket.current.joinRoom(roomCode.slice(1));
+    socket.current.joinRoom(getRoomCode());
 
     return () => {
       if (!isLoading) exitRoom();
@@ -83,16 +87,22 @@ const Room = () => {
       <div>
         <div>
           <button onClick={exitRoom}>◀</button>
-          <button onClick={toggleMyReady}>
-            {isReady ? "준비해제" : "준비완료"}
-          </button>
+          {isHost() ? (
+            <button onClick={() => socket.current.startGame(getRoomCode())}>
+              게임시작
+            </button>
+          ) : (
+            <button onClick={toggleMyReady}>
+              {isReady ? "준비해제" : "준비완료"}
+            </button>
+          )}
         </div>
         <div>
           <text>{roomInfo?.roomSettings.roomName}</text>
           <text>{roomInfo?.roomSettings.isLocked}</text>
         </div>
       </div>
-      <UserList users={users} />
+      <UserList users={users} hostId={roomInfo?.hostId} />
       <Board />
     </RoomContainer>
   );
