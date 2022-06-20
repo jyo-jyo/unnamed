@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Board from "../components/Room/Board";
 import UserList from "../components/Room/UserList";
 import Socket from "../socket";
-
+import { RoomContainer } from "./Room.style";
 interface RoomType {
   hostId: string | null;
   users: string[];
@@ -78,7 +78,7 @@ const Room = () => {
   return isLoading ? (
     <></>
   ) : (
-    <>
+    <RoomContainer>
       <div>
         <div>
           <button onClick={exitRoom}>◀</button>
@@ -88,9 +88,9 @@ const Room = () => {
           <text>{roomInfo?.roomSettings.isLocked}</text>
         </div>
       </div>
-      <Board />
       <UserList users={users} />
-    </>
+      <Board />
+    </RoomContainer>
   );
 };
 
