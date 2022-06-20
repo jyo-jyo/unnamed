@@ -14,6 +14,7 @@ import {
   ROOM_LIST,
   EXIT_ROOM,
   EXIT_USER,
+  TOGGLE_READY,
 } from "../constants/socket";
 
 export interface RoomInfo {
@@ -115,6 +116,10 @@ const socketLoader = (server: any, app: any): any => {
       room.users.push({ id: socket.id, isReady: false, userName: socket.id });
       socket.emit(ENTER_OTHER_USER, room.users, room);
       socket.broadcast.to(roomCode).emit(ENTER_ONE_USER, socket.id);
+    });
+
+    socket.on(TOGGLE_READY, ({ roomCode, isReady }) => {
+      io.to(roomCode).emit(TOGGLE_READY, { id: socket.id, isReady });
     });
 
     socket.on(DRAWING, ({ roomCode, drawingData }) => {

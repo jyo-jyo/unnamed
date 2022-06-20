@@ -5,12 +5,13 @@ import {
   JOIN_ROOM,
   ENTER_ONE_USER,
   ENTER_OTHER_USER,
+  TOGGLE_READY,
   EXIT_USER,
   EXIT_ROOM,
 } from "../constants/socket";
 
 const join = (socket: Socket) => (closure: any) => {
-  const { addUser, initUsers, loadRoomInfo, back } = closure;
+  const { addUser, initUsers, loadRoomInfo, back, toggleOtherReady } = closure;
 
   socket.on(EXIST_ROOM_ERROR, () => {
     back();
@@ -35,12 +36,19 @@ const join = (socket: Socket) => (closure: any) => {
     initUsers(users);
   });
 
+  socket.on(TOGGLE_READY, (data: any) => {
+    toggleOtherReady(data);
+  });
+
   const joinRoom = (roomCode: string) => socket.emit(JOIN_ROOM, { roomCode });
 
   const exitRoom = (roomCode: string) => {
     socket.emit(EXIT_ROOM, { roomCode });
     disconnecting();
   };
+
+  const ready = (roomCode: string, isReady: boolean) =>
+    socket.emit(TOGGLE_READY, { roomCode, isReady });
 
   const disconnecting = () => {
     socket.off(EXIST_ROOM_ERROR);
@@ -50,7 +58,7 @@ const join = (socket: Socket) => (closure: any) => {
     socket.off(EXIT_USER);
   };
 
-  return { joinRoom, exitRoom, disconnecting };
+  return { joinRoom, exitRoom, ready, disconnecting };
 };
 
 export default join;

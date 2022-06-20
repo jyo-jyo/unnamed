@@ -11,6 +11,7 @@ export const EXIST_ROOM_ERROR = "EXIST_ROOM_ERROR";
 export const FULL_ROOM_ERROR = "FULL_ROOM_ERROR";
 export const EXIT_USER = "EXIT_USER";
 export const EXIT_ROOM = "EXIT_ROOM";
+export const TOGGLE_READY = "TOGGLE_READY";
 
 // drawing
 export const DRAWING = "DRAWING";

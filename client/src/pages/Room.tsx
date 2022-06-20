@@ -32,6 +32,7 @@ const Room = () => {
   const { roomCode } = useParams();
   const [roomInfo, setRoomInfo] = useState<RoomType>();
   const [users, setUsers] = useState<UserType[]>([]);
+  const [isReady, setIsReady] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const socket = useRef<any>();
 
@@ -58,10 +59,39 @@ const Room = () => {
     back();
   };
 
+  const toggleOtherReady = ({
+    id,
+    isReady,
+  }: {
+    id: string;
+    isReady: boolean;
+  }) => {
+    setUsers((prev) =>
+      prev.map((user) => {
+        if (user.id === id) user.isReady = isReady;
+        return user;
+      })
+    );
+  };
+
+  const toggleMyReady = () => {
+    setIsReady((prev) => {
+      const isReady = !prev;
+      socket.current.ready(roomCode?.slice(1), isReady);
+      return isReady;
+    });
+  };
+
   useEffect(() => {
     if (!roomCode) return;
     if (socket.current) return;
-    socket.current = Socket.join({ addUser, initUsers, loadRoomInfo, back });
+    socket.current = Socket.join({
+      addUser,
+      initUsers,
+      loadRoomInfo,
+      back,
+      toggleOtherReady,
+    });
     socket.current.joinRoom(roomCode.slice(1));
 
     return () => {
@@ -82,6 +112,9 @@ const Room = () => {
       <div>
         <div>
           <button onClick={exitRoom}>◀</button>
+          <button onClick={toggleMyReady}>
+            {isReady ? "준비해제" : "준비완료"}
+          </button>
         </div>
         <div>
           <text>{roomInfo?.roomSettings.roomName}</text>
