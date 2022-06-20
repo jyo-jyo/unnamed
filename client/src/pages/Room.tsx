@@ -58,7 +58,7 @@ const Room = () => {
     socket.current.joinRoom(roomCode.slice(1));
 
     return () => {
-      // socket.current.disconnecting();
+      if (!isLoading) exitRoom();
     };
   }, []);
 

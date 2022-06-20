@@ -21,6 +21,10 @@ const Board = () => {
       startMyTurn,
       endMyTurn,
     });
+
+    return () => {
+      // socket.current.disconnecting();
+    };
   }, []);
 
   const startDrawing = () => {
@@ -43,7 +47,6 @@ const Board = () => {
     offsetY: number;
   }) => {
     const ctx = contextRef.current;
-    console.log(ctx);
     if (!ctx) return;
     if (!isDrawing) {
       ctx.beginPath();
