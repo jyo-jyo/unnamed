@@ -27,11 +27,15 @@ export interface RoomInfo {
 export interface RoomInfoType {
   [roomCode: string]: RoomInfo;
 }
-
+export interface UserType {
+  id: string;
+  isReady: boolean;
+  userName: string;
+}
 interface RoomType {
   [roomCode: string]: {
     hostId: string | null;
-    users: string[];
+    users: UserType[];
     gameState: {
       isPlaying: boolean;
       currOrder: number;
@@ -108,7 +112,7 @@ const socketLoader = (server: any, app: any): any => {
       if (room.users.length === room.roomSettings.maximumOfUser)
         return socket.emit(FULL_ROOM_ERROR);
       socket.join(roomCode);
-      room.users.push(socket.id);
+      room.users.push({ id: socket.id, isReady: false, userName: socket.id });
       socket.emit(ENTER_OTHER_USER, room.users, room);
       socket.broadcast.to(roomCode).emit(ENTER_ONE_USER, socket.id);
     });
@@ -122,7 +126,7 @@ const socketLoader = (server: any, app: any): any => {
       // TODO: 방장권한, 게임이 진행 중인 경우...
       socket.leave(roomCode);
       const room = rooms[roomCode];
-      room.users = room.users.filter((id) => id !== socket.id);
+      room.users = room.users.filter(({ id }) => id !== socket.id);
       if (room.users.length === 0) {
         delete rooms[roomCode];
         return;
