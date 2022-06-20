@@ -98,7 +98,6 @@ const socketLoader = (server: any, app: any): any => {
         },
         roomSettings,
       };
-      console.log(roomCode);
       socket.emit(CREATE_SUCCESS, roomCode);
     });
 
@@ -111,11 +110,11 @@ const socketLoader = (server: any, app: any): any => {
       socket.join(roomCode);
       room.users.push(socket.id);
       socket.emit(ENTER_OTHER_USER, room.users, room);
-      io.to(roomCode).emit(ENTER_ONE_USER, socket.id);
+      socket.broadcast.to(roomCode).emit(ENTER_ONE_USER, socket.id);
     });
 
     socket.on(DRAWING, ({ roomCode, drawingData }) => {
-      io.to(roomCode).emit(OTHER_DRAWING, drawingData);
+      socket.broadcast.to(roomCode).emit(OTHER_DRAWING, drawingData);
     });
 
     socket.on(EXIT_ROOM, ({ roomCode }) => {
@@ -128,7 +127,7 @@ const socketLoader = (server: any, app: any): any => {
         delete rooms[roomCode];
         return;
       }
-      io.to(roomCode).emit(EXIT_USER, socket.id);
+      socket.broadcast.to(roomCode).emit(EXIT_USER, socket.id);
     });
 
     socket.on("disconnect", () => {

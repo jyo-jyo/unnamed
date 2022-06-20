@@ -6,16 +6,30 @@ import Socket from "../../socket";
 const Board = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D>();
-  const [isMyTurn, setIsMyTurn] = useState<boolean>(true);
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
-  const socket = useRef<any>();
-  const roomCode = useParams().roomCode?.slice(1);
+  const [isMyTurn, setIsMyTurn] = useState<boolean>(true);
+  const { roomCode } = useParams();
+  const socket = useRef<any>(null);
+
+  const startMyTurn = () => setIsMyTurn(true);
+  const endMyTurn = () => setIsMyTurn(false);
+
+  useEffect(() => {
+    if (socket.current) return;
+    socket.current = Socket.drawing({
+      otherDrawing: drawing,
+      startMyTurn,
+      endMyTurn,
+    });
+  }, []);
 
   const startDrawing = () => {
+    if (!isMyTurn) return;
     setIsDrawing(true);
   };
 
   const stopDrawing = () => {
+    if (!isMyTurn) return;
     setIsDrawing(false);
   };
 
@@ -29,6 +43,7 @@ const Board = () => {
     offsetY: number;
   }) => {
     const ctx = contextRef.current;
+    console.log(ctx);
     if (!ctx) return;
     if (!isDrawing) {
       ctx.beginPath();
@@ -38,12 +53,6 @@ const Board = () => {
       ctx.stroke();
     }
   };
-  useEffect(() => {
-    if (socket.current) return;
-    socket.current = Socket.drawing({
-      otherDrawing: drawing,
-    });
-  }, []);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -54,33 +63,33 @@ const Board = () => {
     if (context) {
       contextRef.current = context;
     }
-    return () => {
-      socket.current?.disconnecting();
-    };
   }, [canvasRef.current]);
 
-  return socket.current ? (
+  return (
     <BoardContainer>
       <canvas
         ref={canvasRef}
         onMouseDown={startDrawing}
-        onMouseMove={({ nativeEvent }: { nativeEvent: MouseEvent }) =>
-          isMyTurn &&
+        onMouseMove={({ nativeEvent }: { nativeEvent: MouseEvent }) => {
+          if (!isMyTurn) return;
+          drawing({
+            isDrawing,
+            offsetX: nativeEvent.offsetX,
+            offsetY: nativeEvent.offsetY,
+          });
           socket.current.drawing({
-            roomCode,
+            roomCode: roomCode?.slice(1),
             drawingData: {
               isDrawing,
               offsetX: nativeEvent.offsetX,
               offsetY: nativeEvent.offsetY,
             },
-          })
-        }
+          });
+        }}
         onMouseUp={stopDrawing}
         onMouseLeave={stopDrawing}
       ></canvas>
     </BoardContainer>
-  ) : (
-    <></>
   );
 };
 
