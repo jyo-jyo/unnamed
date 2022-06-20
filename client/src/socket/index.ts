@@ -17,6 +17,7 @@ const Socket = () => {
   return {
     connect: () => socket.connect(),
     disconnect: () => socket.disconnect(),
+    getSID: () => socket.id,
     create: create(socket),
     rooms: rooms(socket),
     join: join(socket),

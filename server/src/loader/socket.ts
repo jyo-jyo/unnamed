@@ -14,6 +14,9 @@ import {
   ROOM_LIST,
   EXIT_ROOM,
   EXIT_USER,
+  TOGGLE_READY,
+  START_GAME,
+  READY_ERROR,
 } from "../constants/socket";
 
 export interface RoomInfo {
@@ -115,6 +118,27 @@ const socketLoader = (server: any, app: any): any => {
       room.users.push({ id: socket.id, isReady: false, userName: socket.id });
       socket.emit(ENTER_OTHER_USER, room.users, room);
       socket.broadcast.to(roomCode).emit(ENTER_ONE_USER, socket.id);
+    });
+
+    socket.on(TOGGLE_READY, ({ roomCode, isReady }) => {
+      // TODO: console.log(roomCode, isReady);
+      const room = rooms[roomCode];
+      room.users = room.users.map((user) => {
+        if (user.id === socket.id) user.isReady = isReady;
+        return user;
+      });
+      io.to(roomCode).emit(TOGGLE_READY, room.users);
+    });
+
+    socket.on(START_GAME, ({ roomCode }) => {
+      if (
+        rooms[roomCode].users.some(({ id, isReady }) => {
+          if (id !== rooms[roomCode].hostId && !isReady) return true;
+          return false;
+        })
+      )
+        return socket.emit(READY_ERROR);
+      io.to(roomCode).emit(START_GAME);
     });
 
     socket.on(DRAWING, ({ roomCode, drawingData }) => {
