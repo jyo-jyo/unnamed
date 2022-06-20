@@ -29,15 +29,10 @@ const Lobby = () => {
     if (socket.current) return;
     socket.current = Socket.create({ joining });
     Socket.connect();
-    return () => {
-      // console.log("return");
-      // socket.current.disconnecting();
-      // Socket.disconnect();
-    };
+    return () => {};
   }, []);
 
   const createRoom = (roomSettings: Object) => {
-    // TODO: roomSetting
     socket.current.createRoom(roomSettings);
   };
 
