@@ -36,18 +36,6 @@ const Room = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const socket = useRef<any>();
 
-  const addUser = (user: any) => {
-    setUsers((prev: any) => [...prev, user]);
-  };
-
-  const initUsers = (user: any) => {
-    setUsers([...user]);
-  };
-
-  const loadRoomInfo = (roomInfo: RoomType) => {
-    setRoomInfo(roomInfo);
-  };
-
   const back = () => {
     socket.current.disconnecting();
     nav(-1);
@@ -57,21 +45,6 @@ const Room = () => {
     if (!roomCode) return;
     socket.current.exitRoom(roomCode.slice(1));
     back();
-  };
-
-  const toggleOtherReady = ({
-    id,
-    isReady,
-  }: {
-    id: string;
-    isReady: boolean;
-  }) => {
-    setUsers((prev) =>
-      prev.map((user) => {
-        if (user.id === id) user.isReady = isReady;
-        return user;
-      })
-    );
   };
 
   const toggleMyReady = () => {
@@ -86,11 +59,9 @@ const Room = () => {
     if (!roomCode) return;
     if (socket.current) return;
     socket.current = Socket.join({
-      addUser,
-      initUsers,
-      loadRoomInfo,
+      setUsers,
+      setRoomInfo,
       back,
-      toggleOtherReady,
     });
     socket.current.joinRoom(roomCode.slice(1));
 
