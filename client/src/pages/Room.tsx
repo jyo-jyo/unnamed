@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Board from "../components/Room/Board";
+import UserList from "../components/Room/UserList";
 import Socket from "../socket";
-
+import { RoomContainer } from "./Room.style";
 interface RoomType {
   hostId: string | null;
   users: string[];
@@ -20,11 +21,17 @@ interface RoomType {
   };
 }
 
+export interface UserType {
+  id: string;
+  isReady: boolean;
+  userName: string;
+}
+
 const Room = () => {
   const nav = useNavigate();
   const { roomCode } = useParams();
   const [roomInfo, setRoomInfo] = useState<RoomType>();
-  const [users, setUsers] = useState<any>([]);
+  const [users, setUsers] = useState<UserType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const socket = useRef<any>();
 
@@ -71,7 +78,7 @@ const Room = () => {
   return isLoading ? (
     <></>
   ) : (
-    <>
+    <RoomContainer>
       <div>
         <div>
           <button onClick={exitRoom}>◀</button>
@@ -81,8 +88,9 @@ const Room = () => {
           <text>{roomInfo?.roomSettings.isLocked}</text>
         </div>
       </div>
+      <UserList users={users} />
       <Board />
-    </>
+    </RoomContainer>
   );
 };
 

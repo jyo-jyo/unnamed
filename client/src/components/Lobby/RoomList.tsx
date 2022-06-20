@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Room from "./Room";
 import { RoomInfoType } from "../../pages/Lobby";
 import Socket from "../../socket";
-import { RoomListContainer } from "./RoomList.style";
+import { RoomListContainer, RoomListBox } from "./RoomList.style";
 const RoomList = () => {
   const [rooms, setRooms] = useState<RoomInfoType>({});
   const socket = useRef<any>();
@@ -21,15 +21,15 @@ const RoomList = () => {
   }, []);
 
   return (
-    <div>
+    <RoomListContainer>
       <button onClick={() => socket.current.getRooms()}>새로고침</button>
-      <RoomListContainer>
-        {Object.keys(rooms).map((roomCode: string) => {
+      <RoomListBox>
+        {Object.keys(rooms).map((roomCode: string, index) => {
           const room = rooms[roomCode];
-          return <Room roomCode={roomCode} roomInfo={room}></Room>;
+          return <Room roomCode={roomCode} roomInfo={room} key={index} />;
         })}
-      </RoomListContainer>
-    </div>
+      </RoomListBox>
+    </RoomListContainer>
   );
 };
 

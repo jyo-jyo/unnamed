@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CreateRoomModal from "../components/Lobby/CreateRoomModal";
 import RoomList from "../components/Lobby/RoomList";
 import Socket from "../socket";
+import Header from "../components/common/Header";
 export interface RoomInfo {
   roomName: string;
   numberOfUser: number;
@@ -29,15 +30,10 @@ const Lobby = () => {
     if (socket.current) return;
     socket.current = Socket.create({ joining });
     Socket.connect();
-    return () => {
-      // console.log("return");
-      // socket.current.disconnecting();
-      // Socket.disconnect();
-    };
+    return () => {};
   }, []);
 
   const createRoom = (roomSettings: Object) => {
-    // TODO: roomSetting
     socket.current.createRoom(roomSettings);
   };
 
@@ -59,14 +55,16 @@ const Lobby = () => {
 
   return (
     <>
-      <div>
-        <button onClick={openModal}>생성</button>
-        <input ref={inputRef} placeholder='방코드를 입력해주세요'></input>
-        <button onClick={joinRoom}>입장</button>
-      </div>
-      <div>
-        <RoomList />
-      </div>
+      <Header>
+        <>
+          <div>
+            <input ref={inputRef} placeholder='방코드를 입력해주세요'></input>
+            <button onClick={joinRoom}>입장</button>
+          </div>
+          <button onClick={openModal}>생성</button>
+        </>
+      </Header>
+      <RoomList />
       <CreateRoomModal
         isOpen={isOpen}
         closeModal={closeModal}
