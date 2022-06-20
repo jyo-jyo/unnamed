@@ -60,8 +60,8 @@ const Board = () => {
   useEffect(() => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
-    canvas.height = canvas.parentElement?.offsetHeight ?? 250;
-    canvas.width = canvas.parentElement?.offsetWidth ?? 250;
+    canvas.height = canvas.parentElement?.offsetHeight ?? 500;
+    canvas.width = canvas.parentElement?.offsetWidth ?? 500;
     const context = canvas.getContext("2d");
     if (context) {
       contextRef.current = context;
