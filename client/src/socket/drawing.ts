@@ -10,7 +10,6 @@ const drawing = (socket: Socket) => (closure: any) => {
   const { otherDrawing, startMyTurn, endMyTurn } = closure;
 
   socket.on(OTHER_DRAWING, (drawingData) => {
-    console.log("other");
     otherDrawing(drawingData);
   });
 
