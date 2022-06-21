@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Board from "../components/Room/Board";
 import UserList from "../components/Room/UserList";
+import useRoomCode from "../hooks/useRoomCode";
 import Socket from "../socket";
 import { RoomContainer } from "./Room.style";
 interface RoomType {
@@ -29,14 +30,12 @@ export interface UserType {
 
 const Room = () => {
   const nav = useNavigate();
-  const { roomCode } = useParams();
   const [roomInfo, setRoomInfo] = useState<RoomType>();
   const [users, setUsers] = useState<UserType[]>([]);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const socket = useRef<any>();
-
-  const getRoomCode = () => roomCode?.slice(1);
+  const roomCode = useRoomCode();
 
   const back = () => {
     socket.current.disconnecting();
@@ -45,14 +44,14 @@ const Room = () => {
 
   const exitRoom = () => {
     if (!roomCode) return;
-    socket.current.exitRoom(getRoomCode());
+    socket.current.exitRoom(roomCode);
     back();
   };
 
   const toggleMyReady = () => {
     setIsReady((prev) => {
       const isReady = !prev;
-      socket.current.ready(getRoomCode(), isReady);
+      socket.current.ready(roomCode, isReady);
       return isReady;
     });
   };
@@ -67,7 +66,7 @@ const Room = () => {
       setRoomInfo,
       back,
     });
-    socket.current.joinRoom(getRoomCode());
+    socket.current.joinRoom(roomCode);
 
     return () => {
       if (!isLoading) exitRoom();
@@ -88,7 +87,7 @@ const Room = () => {
         <div>
           <button onClick={exitRoom}>◀</button>
           {isHost() ? (
-            <button onClick={() => socket.current.startGame(getRoomCode())}>
+            <button onClick={() => socket.current.startGame(roomCode)}>
               게임시작
             </button>
           ) : (
@@ -98,8 +97,8 @@ const Room = () => {
           )}
         </div>
         <div>
-          <text>{roomInfo?.roomSettings.roomName}</text>
-          <text>{roomInfo?.roomSettings.isLocked}</text>
+          <span>{roomInfo?.roomSettings.roomName}</span>
+          <span>{roomInfo?.roomSettings.isLocked}</span>
         </div>
       </div>
       <UserList users={users} hostId={roomInfo?.hostId} />
