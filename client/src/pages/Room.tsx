@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Board from "../components/Room/Board";
 import ChatList from "../components/Room/ChatList";
 import UserList from "../components/Room/UserList";
@@ -87,7 +87,7 @@ const Room = () => {
       <div>
         <div>
           <button onClick={exitRoom}>◀</button>
-          {isHost() ? (
+          {!roomInfo?.gameState.isPlaying && isHost() ? (
             <button onClick={() => socket.current.startGame(roomCode)}>
               게임시작
             </button>
