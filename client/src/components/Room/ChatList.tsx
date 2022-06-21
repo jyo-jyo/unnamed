@@ -23,11 +23,16 @@ const ChatList = ({ id }: { id: string }) => {
     socket.current = Socket.chat({ addNewChat });
   }, []);
 
+  const handleKeyDown = ({ code }: React.KeyboardEvent) => {
+    if (code === "Enter") sendMessage();
+  };
+
   const sendMessage = () => {
     const message = chatRef.current?.value;
     if (!message) return;
     socket.current.sendChat({ roomCode, message });
     addNewChat({ id, message });
+    chatRef.current.value = "";
   };
 
   return (
@@ -43,7 +48,7 @@ const ChatList = ({ id }: { id: string }) => {
         ))}
       </div>
       <div>
-        <input ref={chatRef}></input>
+        <input ref={chatRef} onKeyDown={handleKeyDown}></input>
         <button onClick={sendMessage}>전송</button>
       </div>
     </>
