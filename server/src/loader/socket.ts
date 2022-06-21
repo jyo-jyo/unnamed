@@ -17,6 +17,12 @@ import {
   TOGGLE_READY,
   START_GAME,
   READY_ERROR,
+  NEXT_TURN,
+  GAME_TIME,
+  SEND_CHAT,
+  RECEIVE_CHAT,
+  START_MY_TURN,
+  END_MY_TURN,
 } from "../constants/socket";
 
 export interface RoomInfo {
@@ -41,6 +47,8 @@ interface RoomType {
     users: UserType[];
     gameState: {
       isPlaying: boolean;
+      game: NodeJS.Timeout | null;
+      answer: string;
       currOrder: number;
       currRound: number;
     };
@@ -53,6 +61,9 @@ interface RoomType {
     };
   };
 }
+
+const rooms = <RoomType>{};
+
 const createRoomCode = (rooms: RoomType) => {
   while (true) {
     const code = Math.random().toString(16).substr(2, 5);
@@ -60,9 +71,36 @@ const createRoomCode = (rooms: RoomType) => {
   }
 };
 
-const socketLoader = (server: any, app: any): any => {
-  const rooms = <RoomType>{};
+const randomAnswer = () => {
+  // TODO
+  return "배고파";
+};
 
+const nextTurn = ({ io, roomCode }: { io: any; roomCode: string }) => {
+  const room = rooms[roomCode];
+  if (++room.gameState.currRound > room.roomSettings.totalRound) {
+    // TODO: 게임 종료
+  }
+  io.to(room.users[room.gameState.currOrder].id).emit(END_MY_TURN);
+  if (++room.gameState.currOrder === room.roomSettings.maximumOfUser)
+    room.gameState.currOrder = 0;
+
+  io.to(roomCode).emit(NEXT_TURN, {
+    restTime: GAME_TIME,
+    currOrder: room.gameState.currOrder,
+    currRound: room.gameState.currRound,
+  });
+
+  io.to(room.users[room.gameState.currOrder].id).emit(START_MY_TURN, {
+    answer: randomAnswer(),
+  });
+
+  room.gameState.game = setTimeout(() => {
+    nextTurn({ io, roomCode });
+  }, GAME_TIME * 1000);
+};
+
+const socketLoader = (server: any, app: any): any => {
   const io = new Server(server, {
     cors: {
       origin: FRONT_BASE_URL,
@@ -100,6 +138,8 @@ const socketLoader = (server: any, app: any): any => {
         users: [],
         gameState: {
           isPlaying: false,
+          game: null,
+          answer: "",
           currOrder: 0,
           currRound: 0,
         },
@@ -121,7 +161,6 @@ const socketLoader = (server: any, app: any): any => {
     });
 
     socket.on(TOGGLE_READY, ({ roomCode, isReady }) => {
-      // TODO: console.log(roomCode, isReady);
       const room = rooms[roomCode];
       room.users = room.users.map((user) => {
         if (user.id === socket.id) user.isReady = isReady;
@@ -138,7 +177,23 @@ const socketLoader = (server: any, app: any): any => {
         })
       )
         return socket.emit(READY_ERROR);
+      const room = rooms[roomCode];
       io.to(roomCode).emit(START_GAME);
+      io.to(room.users[0].id).emit(START_MY_TURN);
+      room.gameState.game = setTimeout(() => {
+        nextTurn({ io, roomCode });
+      }, GAME_TIME * 1000);
+    });
+
+    socket.on(SEND_CHAT, ({ roomCode, message }) => {
+      const room = rooms[roomCode];
+      socket.broadcast
+        .to(roomCode)
+        .emit(RECEIVE_CHAT, { id: socket.id, message });
+      if (!room.gameState.isPlaying || message !== room.gameState.answer)
+        return;
+      // 정답일 경우
+      nextTurn({ roomCode, io });
     });
 
     socket.on(DRAWING, ({ roomCode, drawingData }) => {
