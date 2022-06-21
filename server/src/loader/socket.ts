@@ -179,7 +179,7 @@ const socketLoader = (server: any, app: any): any => {
         return socket.emit(READY_ERROR);
       const room = rooms[roomCode];
       io.to(roomCode).emit(START_GAME);
-      io.to(room.users[0].id).emit(START_MY_TURN);
+      io.to(room.users[0].id).emit(START_MY_TURN, { answer: randomAnswer() });
       room.gameState.game = setTimeout(() => {
         nextTurn({ io, roomCode });
       }, GAME_TIME * 1000);

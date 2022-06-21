@@ -11,7 +11,7 @@ const Chat = ({
 }) => {
   return (
     <div>
-      <span>{id}</span>
+      <p>{id}</p>
       <span>{message}</span>
     </div>
   );
