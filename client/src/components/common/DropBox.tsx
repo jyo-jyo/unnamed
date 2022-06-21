@@ -34,6 +34,7 @@ const DropBox = ({
             }}
             isFirst={index === 0}
             isLast={index === options.length - 1}
+            key={index}
           >
             {option}
           </DropBoxItem>
