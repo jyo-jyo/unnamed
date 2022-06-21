@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Board from "../components/Room/Board";
+import ChatList from "../components/Room/ChatList";
 import UserList from "../components/Room/UserList";
 import useRoomCode from "../hooks/useRoomCode";
 import Socket from "../socket";
@@ -103,6 +104,7 @@ const Room = () => {
       </div>
       <UserList users={users} hostId={roomInfo?.hostId} />
       <Board />
+      <ChatList id={Socket.getSID()} />
     </RoomContainer>
   );
 };
