@@ -6,21 +6,35 @@ import {
   RECEIVE_CHAT,
   SEND_CHAT,
   START_GAME,
+  END_GAME,
   START_MY_TURN,
   END_MY_TURN,
   TOGGLE_READY,
 } from "../constants/socket";
-import { SocketType } from "../loader/socket";
+import { RoomType, SocketType } from "../loader/socket";
 const game = ({ io, socket, rooms }: SocketType) => {
   const randomAnswer = () => {
-    // TODO
+    // TODO: random keyword
     return "배고파";
   };
 
-  const nextTurn = ({ io, roomCode }: { io: any; roomCode: string }) => {
+  const initGameState = () => {
+    return {
+      isPlaying: false,
+      game: null,
+      answer: "",
+      currOrder: 0,
+      currRound: 0,
+    };
+  };
+
+  const nextTurn = ({ roomCode }: { roomCode: string }) => {
     const room = rooms[roomCode];
+    if (room.gameState.game) clearTimeout(room.gameState.game);
     if (++room.gameState.currRound > room.roomSettings.totalRound) {
-      // TODO: 게임 종료
+      // TODO: 게임 종료 점수 전송
+      io.to(roomCode).emit(END_GAME);
+      room.gameState = initGameState();
     }
     io.to(room.users[room.gameState.currOrder].id).emit(END_MY_TURN);
     if (++room.gameState.currOrder === room.roomSettings.maximumOfUser)
@@ -31,13 +45,13 @@ const game = ({ io, socket, rooms }: SocketType) => {
       currOrder: room.gameState.currOrder,
       currRound: room.gameState.currRound,
     });
-
+    const answer = randomAnswer();
+    room.gameState.answer = answer;
     io.to(room.users[room.gameState.currOrder].id).emit(START_MY_TURN, {
-      answer: randomAnswer(),
+      answer,
     });
-
     room.gameState.game = setTimeout(() => {
-      nextTurn({ io, roomCode });
+      nextTurn({ roomCode });
     }, GAME_TIME * 1000);
   };
 
@@ -59,11 +73,14 @@ const game = ({ io, socket, rooms }: SocketType) => {
     )
       return socket.emit(READY_ERROR);
     const room = rooms[roomCode];
-    io.to(roomCode).emit(START_GAME);
-    io.to(room.users[0].id).emit(START_MY_TURN, { answer: randomAnswer() });
+    const answer = randomAnswer();
+    room.gameState.answer = answer;
+    room.gameState.isPlaying = true;
     room.gameState.game = setTimeout(() => {
-      nextTurn({ io, roomCode });
+      nextTurn({ roomCode });
     }, GAME_TIME * 1000);
+    io.to(roomCode).emit(START_GAME);
+    io.to(room.users[0].id).emit(START_MY_TURN, { answer });
   });
 
   socket.on(SEND_CHAT, ({ roomCode, message }) => {
@@ -73,7 +90,7 @@ const game = ({ io, socket, rooms }: SocketType) => {
       .emit(RECEIVE_CHAT, { id: socket.id, message });
     if (!room.gameState.isPlaying || message !== room.gameState.answer) return;
     // 정답일 경우
-    nextTurn({ roomCode, io });
+    nextTurn({ roomCode });
   });
   return { io, socket, rooms };
 };
