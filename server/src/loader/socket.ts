@@ -1,13 +1,7 @@
 import { Socket, Server } from "socket.io";
 
 import { FRONT_BASE_URL } from "../constants/constant";
-import {
-  DRAWING,
-  OTHER_DRAWING,
-  EXIST_ROOM_ERROR,
-  EXIT_ROOM,
-  EXIT_USER,
-} from "../constants/socket";
+import { DRAWING, OTHER_DRAWING } from "../constants/socket";
 import game from "../socket/game";
 import join from "../socket/room";
 import pipe from "../utils/pipe";
