@@ -64,9 +64,10 @@ const join = ({ io, socket, rooms }: SocketType) => {
     if (room.users.length === room.roomSettings.maximumOfUser)
       return socket.emit(FULL_ROOM_ERROR);
     socket.join(roomCode);
-    room.users.push({ id: socket.id, isReady: false, userName: socket.id });
+    const user = { id: socket.id, isReady: false, userName: socket.id };
+    room.users.push(user);
     socket.emit(ENTER_OTHER_USER, room.users, room);
-    socket.broadcast.to(roomCode).emit(ENTER_ONE_USER, socket.id);
+    socket.broadcast.to(roomCode).emit(ENTER_ONE_USER, user);
   });
 
   socket.on(EXIT_ROOM, ({ roomCode }) => {

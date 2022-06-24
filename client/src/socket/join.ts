@@ -26,6 +26,7 @@ const join = (socket: Socket) => (closure: any) => {
   });
 
   socket.on(ENTER_ONE_USER, (user) => {
+    console.log(user);
     setUsers((prev: UserType[]) => [...prev, user]);
   });
 
