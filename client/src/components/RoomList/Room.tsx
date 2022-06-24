@@ -4,7 +4,7 @@ import {
   RoomContainer,
   RoomTitleBox,
   RoomInfoBox,
-} from "@components/Lobby/Room.style";
+} from "@components/RoomList/Room.style";
 import { RoomInfo } from "@src/@types";
 const Room = ({
   roomCode,
