@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Board from "../components/Room/Board";
+import ChatList from "../components/Room/ChatList";
 import UserList from "../components/Room/UserList";
+import useRoomCode from "../hooks/useRoomCode";
 import Socket from "../socket";
 import { RoomContainer } from "./Room.style";
 interface RoomType {
@@ -29,23 +31,12 @@ export interface UserType {
 
 const Room = () => {
   const nav = useNavigate();
-  const { roomCode } = useParams();
   const [roomInfo, setRoomInfo] = useState<RoomType>();
   const [users, setUsers] = useState<UserType[]>([]);
+  const [isReady, setIsReady] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const socket = useRef<any>();
-
-  const addUser = (user: any) => {
-    setUsers((prev: any) => [...prev, user]);
-  };
-
-  const initUsers = (user: any) => {
-    setUsers([...user]);
-  };
-
-  const loadRoomInfo = (roomInfo: RoomType) => {
-    setRoomInfo(roomInfo);
-  };
+  const roomCode = useRoomCode();
 
   const back = () => {
     socket.current.disconnecting();
@@ -54,15 +45,29 @@ const Room = () => {
 
   const exitRoom = () => {
     if (!roomCode) return;
-    socket.current.exitRoom(roomCode.slice(1));
+    socket.current.exitRoom(roomCode);
     back();
   };
+
+  const toggleMyReady = () => {
+    setIsReady((prev) => {
+      const isReady = !prev;
+      socket.current.ready(roomCode, isReady);
+      return isReady;
+    });
+  };
+
+  const isHost = () => roomInfo?.hostId === Socket.getSID();
 
   useEffect(() => {
     if (!roomCode) return;
     if (socket.current) return;
-    socket.current = Socket.join({ addUser, initUsers, loadRoomInfo, back });
-    socket.current.joinRoom(roomCode.slice(1));
+    socket.current = Socket.join({
+      setUsers,
+      setRoomInfo,
+      back,
+    });
+    socket.current.joinRoom(roomCode);
 
     return () => {
       if (!isLoading) exitRoom();
@@ -82,14 +87,24 @@ const Room = () => {
       <div>
         <div>
           <button onClick={exitRoom}>◀</button>
+          {!roomInfo?.gameState.isPlaying && isHost() ? (
+            <button onClick={() => socket.current.startGame(roomCode)}>
+              게임시작
+            </button>
+          ) : (
+            <button onClick={toggleMyReady}>
+              {isReady ? "준비해제" : "준비완료"}
+            </button>
+          )}
         </div>
         <div>
-          <text>{roomInfo?.roomSettings.roomName}</text>
-          <text>{roomInfo?.roomSettings.isLocked}</text>
+          <span>{roomInfo?.roomSettings.roomName}</span>
+          <span>{roomInfo?.roomSettings.isLocked}</span>
         </div>
       </div>
-      <UserList users={users} />
+      <UserList users={users} hostId={roomInfo?.hostId} />
       <Board />
+      <ChatList id={Socket.getSID()} />
     </RoomContainer>
   );
 };

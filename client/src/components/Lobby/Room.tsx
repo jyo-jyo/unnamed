@@ -32,20 +32,20 @@ const Room = ({
   return (
     <RoomContainer isAccessible={isAccessible} onClick={joining}>
       <RoomTitleBox>
-        <text>{roomName}</text>
+        <span>{roomName}</span>
         {isLocked && <button>Locked</button>}
       </RoomTitleBox>
       <hr />
       <RoomInfoBox>
         <div>
-          <text>인원</text>
-          <text>
+          <span>인원</span>
+          <span>
             {numberOfUser}/{maximumOfUser}
-          </text>
+          </span>
         </div>
         <div>
-          <text>라운드</text>
-          <text>{totalRound}</text>
+          <span>라운드</span>
+          <span>{totalRound}</span>
         </div>
       </RoomInfoBox>
     </RoomContainer>

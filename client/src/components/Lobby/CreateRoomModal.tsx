@@ -47,12 +47,12 @@ const CreateRoomModal = ({
     <Modal isOpen={isOpen} closeModal={closeModal}>
       <CreateRoomModalContainer>
         <InputBox>
-          <text>방제목</text>
+          <span>방제목</span>
           <input ref={roomName}></input>
         </InputBox>
         <DropBoxInputBox>
           <InputBox>
-            <text>인원수</text>
+            <span>인원수</span>
             <DropBox
               options={USER_OPTIONS}
               selected={maximumOfUser}
@@ -60,7 +60,7 @@ const CreateRoomModal = ({
             />
           </InputBox>
           <InputBox>
-            <text>라운드</text>
+            <span>라운드</span>
             <DropBox
               options={ROUND_OPTIONS}
               selected={totalRound}
@@ -69,7 +69,7 @@ const CreateRoomModal = ({
           </InputBox>
         </DropBoxInputBox>
         <div>
-          <text>비밀번호 설정</text>
+          <span>비밀번호 설정</span>
           <input ref={isLocked} type={"checkbox"}></input>
           <input ref={password} type={"password"}></input>
         </div>
