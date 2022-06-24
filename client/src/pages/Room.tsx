@@ -6,29 +6,7 @@ import UserList from "@components/Room/UserList";
 import useRoomCode from "@hooks/useRoomCode";
 import Socket from "@socket/index";
 import { RoomContainer } from "@pages/Room.style";
-interface RoomType {
-  hostId: string | null;
-  users: string[];
-  gameState: {
-    isPlaying: boolean;
-    currOrder: number;
-    currRound: number;
-  };
-  roomSettings: {
-    roomName: string;
-    maximumOfUser: number;
-    totalRound: number;
-    isLocked: boolean;
-    password: string;
-  };
-}
-
-export interface UserType {
-  id: string;
-  isReady: boolean;
-  userName: string;
-}
-
+import { RoomType, UserType } from "@src/@types";
 const Room = () => {
   const nav = useNavigate();
   const [roomInfo, setRoomInfo] = useState<RoomType>();

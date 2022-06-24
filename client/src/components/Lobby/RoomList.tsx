@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Room from "@components/Lobby/Room";
-import { RoomInfoType } from "@pages/Lobby";
+import { RoomInfoType } from "@src/@types";
 import Socket from "@socket/index";
 import {
   RoomListContainer,

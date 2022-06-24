@@ -1,4 +1,3 @@
-import { Socket } from "socket.io";
 import {
   GAME_TIME,
   NEXT_TURN,
@@ -11,7 +10,7 @@ import {
   END_MY_TURN,
   TOGGLE_READY,
 } from "@constants/socket";
-import { SocketType } from "@loader/socket";
+import { SocketType } from "@src/@types";
 const game = ({ io, socket, rooms }: SocketType) => {
   const randomAnswer = () => {
     // TODO: random keyword

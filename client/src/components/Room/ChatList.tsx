@@ -2,11 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Socket from "@socket/index";
 import useRoomCode from "@hooks/useRoomCode";
 import Chat from "@components/Room/Chat";
-
-interface ChatType {
-  message: string;
-  id: string;
-}
+import { ChatType } from "@src/@types";
 
 const ChatList = ({ id }: { id: string }) => {
   const chatRef = useRef<HTMLInputElement>(null);

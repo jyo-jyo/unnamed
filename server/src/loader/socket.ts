@@ -5,49 +5,7 @@ import { DRAWING, OTHER_DRAWING } from "@constants/socket";
 import game from "@socket/game";
 import join from "@socket/room";
 import pipe from "@utils/pipe";
-
-export interface RoomInfo {
-  roomName: string;
-  numberOfUser: number;
-  maximumOfUser: number;
-  totalRound: number;
-  isPlaying: boolean;
-  isLocked: boolean;
-}
-export interface RoomInfoType {
-  [roomCode: string]: RoomInfo;
-}
-export interface UserType {
-  id: string;
-  isReady: boolean;
-  userName: string;
-}
-export interface RoomType {
-  [roomCode: string]: {
-    hostId: string | null;
-    users: UserType[];
-    gameState: {
-      isPlaying: boolean;
-      game: NodeJS.Timeout | null;
-      answer: string;
-      currOrder: number;
-      currRound: number;
-    };
-    roomSettings: {
-      roomName: string;
-      maximumOfUser: number;
-      totalRound: number;
-      isLocked: boolean;
-      password: string;
-    };
-  };
-}
-
-export interface SocketType {
-  io: any;
-  socket: Socket;
-  rooms: RoomType;
-}
+import { RoomType } from "@src/@types";
 
 const socketLoader = (server: any, app: any): any => {
   const rooms = <RoomType>{};

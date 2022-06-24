@@ -1,5 +1,5 @@
 import React from "react";
-import { UserType } from "@pages/Room";
+import { UserType } from "@src/@types";
 import { UserProfileBox } from "@components/Room/UserList.style";
 const UserList = ({
   users,

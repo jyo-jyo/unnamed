@@ -8,7 +8,8 @@
       "@socket/*": ["src/socket/*"],
       "@hooks/*": ["src/hooks/*"],
       "@constants/*": ["src/constants/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@types/*": ["src/@types/*"]
     }
   }
 }
