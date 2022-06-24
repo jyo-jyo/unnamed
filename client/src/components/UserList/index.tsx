@@ -1,23 +1,3 @@
-import React from "react";
-import { UserType } from "@src/@types";
-import { UserProfileBox } from "@components/UserList/UserList.style";
-const UserList = ({
-  users,
-  hostId,
-}: {
-  users: UserType[];
-  hostId: string | undefined | null;
-}) => {
-  return (
-    <>
-      {users.map(({ id, isReady, userName }, index) => (
-        <UserProfileBox isReady={isReady} key={index}>
-          <span>{userName}</span>
-          {hostId !== id ? <span>{isReady ? "준비완" : "노준비"}</span> : <></>}
-        </UserProfileBox>
-      ))}
-    </>
-  );
-};
+import UserList from "./UserList";
 
-export default UserList;
+export { UserList };

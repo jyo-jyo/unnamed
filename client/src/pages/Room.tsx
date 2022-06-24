@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Board from "@components/Board";
-import ChatList from "@components/ChatList";
-import UserList from "@components/UserList";
+import { Board } from "@components/Board";
+import { ChatList } from "@components/ChatList";
+import { UserList } from "@components/UserList";
 import useRoomCode from "@hooks/useRoomCode";
 import Socket from "@socket/index";
 import { RoomContainer } from "@pages/Room.style";
 import { RoomType, UserType } from "@src/@types";
+
 const Room = () => {
   const nav = useNavigate();
   const [roomInfo, setRoomInfo] = useState<RoomType>();
@@ -80,9 +81,13 @@ const Room = () => {
           <span>{roomInfo?.roomSettings.isLocked}</span>
         </div>
       </div>
-      <UserList users={users} hostId={roomInfo?.hostId} />
+      <UserList
+        users={users}
+        hostId={roomInfo?.hostId}
+        isPlaying={roomInfo?.gameState.isPlaying}
+      />
       <Board />
-      <ChatList id={Socket.getSID()} />
+      <ChatList />
     </RoomContainer>
   );
 };

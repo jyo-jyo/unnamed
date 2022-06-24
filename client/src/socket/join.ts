@@ -51,7 +51,6 @@ const join = (socket: Socket) => (closure: any) => {
 
   const exitRoom = (roomCode: string) => {
     socket.emit(EXIT_ROOM, { roomCode });
-    disconnecting();
   };
 
   const ready = (roomCode: string, isReady: boolean) =>
@@ -65,6 +64,8 @@ const join = (socket: Socket) => (closure: any) => {
     socket.off(ENTER_ONE_USER);
     socket.off(ENTER_OTHER_USER);
     socket.off(EXIT_USER);
+    socket.off(TOGGLE_READY);
+    socket.off(READY_ERROR);
   };
 
   return { joinRoom, exitRoom, ready, startGame, disconnecting };

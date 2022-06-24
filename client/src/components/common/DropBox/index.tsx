@@ -4,7 +4,7 @@ import {
   DropBoxButton,
   DropBoxItemBox,
   DropBoxItem,
-} from "@components/common/DropBox/DropBox.style";
+} from "./DropBox.style";
 const DropBox = ({
   options,
   selected,

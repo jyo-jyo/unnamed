@@ -1,24 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateRoomModal from "@components/CreateRoomModal";
-import RoomList from "@components/RoomList";
+import { CreateRoomModal } from "@src/components/CreateRoomModal";
+import { RoomList } from "@src/components/RoomList";
 import Socket from "@socket/index";
-import Header from "@components/common/Header";
+import { Header } from "@components/common";
 
 const Lobby = () => {
   const nav = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
-  const socket = useRef<any>();
+  const socket = useRef<any>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const joining = (roomCode: string) => {
     nav(`/room:${roomCode}`);
+    socket.current.disconnecting();
   };
 
   useEffect(() => {
     if (socket.current) return;
-    socket.current = Socket.create({ joining });
     Socket.connect();
+    socket.current = Socket.create({ joining });
     return () => {};
   }, []);
 
