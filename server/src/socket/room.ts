@@ -1,4 +1,3 @@
-import { Socket } from "socket.io";
 import {
   CREATE_ROOM,
   CREATE_SUCCESS,
@@ -11,7 +10,8 @@ import {
   JOIN_ROOM,
   ROOM_LIST,
 } from "@constants/socket";
-import { RoomInfoType, RoomType, SocketType } from "@loader/socket";
+
+import { RoomInfoType, RoomType, SocketType } from "@src/@types";
 
 const join = ({ io, socket, rooms }: SocketType) => {
   const createRoomCode = (rooms: RoomType) => {
