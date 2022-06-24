@@ -5,7 +5,7 @@ import {
   START_GAME,
   TOGGLE_READY,
 } from "@constants/socket";
-import { RoomInfo, RoomType } from "@src/@types";
+import { RoomType } from "@src/@types";
 
 const waiting = (socket: Socket) => (closure: any) => {
   const { setUsers, setRoomInfo } = closure;
