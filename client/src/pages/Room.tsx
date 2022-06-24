@@ -1,25 +1,20 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Board } from "@components/Board";
 import { ChatList } from "@components/ChatList";
 import { UserList } from "@components/UserList";
 import useRoomCode from "@hooks/useRoomCode";
 import Socket from "@socket/index";
-import {
-  RoomContainer,
-  RoomHeaderContainer,
-  ExitButton,
-} from "@pages/Room.style";
+import { RoomContainer } from "@pages/Room.style";
 import { RoomType, UserType } from "@src/@types";
-import { Header } from "@components/common";
+import { RoomHeader } from "@src/components/RoomHeader";
 
 const Room = () => {
   const nav = useNavigate();
   const [roomInfo, setRoomInfo] = useState<RoomType>();
   const [users, setUsers] = useState<UserType[]>([]);
-  const [isReady, setIsReady] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const socket = useRef<any>();
+  const socket = useRef<any>(null);
   const roomCode = useRoomCode();
 
   const back = () => {
@@ -27,24 +22,7 @@ const Room = () => {
     nav("/", { replace: true });
   };
 
-  const exitRoom = () => {
-    if (!roomCode) return;
-    socket.current.exitRoom(roomCode);
-    back();
-  };
-
-  const toggleReady = () => {
-    setIsReady((prev) => {
-      const isReady = !prev;
-      socket.current.ready(roomCode, isReady);
-      return isReady;
-    });
-  };
-
-  const isHost = () => roomInfo?.hostId === Socket.getSID();
-
   useEffect(() => {
-    if (!roomCode) return;
     if (socket.current) return;
     socket.current = Socket.join({
       setUsers,
@@ -54,7 +32,7 @@ const Room = () => {
     socket.current.joinRoom(roomCode);
 
     return () => {
-      if (!isLoading) exitRoom();
+      if (!isLoading) socket.current.disconnecting();
     };
   }, []);
 
@@ -68,24 +46,11 @@ const Room = () => {
     <></>
   ) : (
     <RoomContainer>
-      <Header>
-        <RoomHeaderContainer>
-          <div>
-            <ExitButton onClick={exitRoom}>◀</ExitButton>
-            <span>{roomInfo?.roomSettings.roomName}</span>
-            <span>{roomInfo?.roomSettings.isLocked}</span>
-          </div>
-          {!roomInfo?.gameState.isPlaying && isHost() ? (
-            <button onClick={() => socket.current.startGame(roomCode)}>
-              게임시작
-            </button>
-          ) : (
-            <button onClick={toggleReady}>
-              {isReady ? "준비해제" : "준비완료"}
-            </button>
-          )}
-        </RoomHeaderContainer>
-      </Header>
+      <RoomHeader
+        roomInfo={roomInfo}
+        setRoomInfo={setRoomInfo}
+        setUsers={setUsers}
+      />
       <UserList
         users={users}
         hostId={roomInfo?.hostId}
