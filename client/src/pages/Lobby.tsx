@@ -4,17 +4,6 @@ import CreateRoomModal from "@components/Lobby/CreateRoomModal";
 import RoomList from "@components/Lobby/RoomList";
 import Socket from "@socket/index";
 import Header from "@components/common/Header";
-export interface RoomInfo {
-  roomName: string;
-  numberOfUser: number;
-  maximumOfUser: number;
-  totalRound: number;
-  isPlaying: boolean;
-  isLocked: boolean;
-}
-export interface RoomInfoType {
-  [roomCode: string]: RoomInfo;
-}
 
 const Lobby = () => {
   const nav = useNavigate();

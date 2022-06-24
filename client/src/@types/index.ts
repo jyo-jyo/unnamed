@@ -1,0 +1,40 @@
+// Room
+export interface RoomType {
+  hostId: string | null;
+  users: string[];
+  gameState: {
+    isPlaying: boolean;
+    currOrder: number;
+    currRound: number;
+  };
+  roomSettings: {
+    roomName: string;
+    maximumOfUser: number;
+    totalRound: number;
+    isLocked: boolean;
+    password: string;
+  };
+}
+
+export interface RoomInfo {
+  roomName: string;
+  numberOfUser: number;
+  maximumOfUser: number;
+  totalRound: number;
+  isPlaying: boolean;
+  isLocked: boolean;
+}
+export interface RoomInfoType {
+  [roomCode: string]: RoomInfo;
+}
+
+export interface UserType {
+  id: string;
+  isReady: boolean;
+  userName: string;
+}
+
+export interface ChatType {
+  message: string;
+  id: string;
+}

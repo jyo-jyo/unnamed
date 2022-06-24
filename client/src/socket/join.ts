@@ -11,7 +11,7 @@ import {
   START_GAME,
   READY_ERROR,
 } from "@constants/socket";
-import { UserType } from "@pages/Room";
+import { UserType } from "@src/@types";
 
 const join = (socket: Socket) => (closure: any) => {
   const { setUsers, setRoomInfo, back } = closure;
