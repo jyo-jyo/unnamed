@@ -1,10 +1,10 @@
 import { Socket, Server } from "socket.io";
 
-import { FRONT_BASE_URL } from "../constants/constant";
-import { DRAWING, OTHER_DRAWING } from "../constants/socket";
-import game from "../socket/game";
-import join from "../socket/room";
-import pipe from "../utils/pipe";
+import { FRONT_BASE_URL } from "@constants/constant";
+import { DRAWING, OTHER_DRAWING } from "@constants/socket";
+import game from "@socket/game";
+import join from "@socket/room";
+import pipe from "@utils/pipe";
 
 export interface RoomInfo {
   roomName: string;

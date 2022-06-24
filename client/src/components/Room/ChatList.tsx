@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import Socket from "../../socket";
-import useRoomCode from "../../hooks/useRoomCode";
-import Chat from "./Chat";
+import Socket from "@socket/index";
+import useRoomCode from "@hooks/useRoomCode";
+import Chat from "@components/Room/Chat";
 
 interface ChatType {
   message: string;

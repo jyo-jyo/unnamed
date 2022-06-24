@@ -1,5 +1,5 @@
 import { Socket } from "socket.io-client";
-import { RECEIVE_CHAT, SEND_CHAT } from "../constants/socket";
+import { RECEIVE_CHAT, SEND_CHAT } from "@constants/socket";
 
 const chat = (socket: Socket) => (closure: any) => {
   const { addNewChat } = closure;

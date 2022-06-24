@@ -10,6 +10,7 @@
 
 # production
 */public
+*/dist
 
 # misc
 .DS_Store

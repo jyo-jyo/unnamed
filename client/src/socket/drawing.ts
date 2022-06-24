@@ -5,7 +5,7 @@ import {
   START_MY_TURN,
   END_MY_TURN,
   START_GAME,
-} from "../constants/socket";
+} from "@constants/socket";
 
 const drawing = (socket: Socket) => (closure: any) => {
   const { otherDrawing, startMyTurn, endMyTurn } = closure;
