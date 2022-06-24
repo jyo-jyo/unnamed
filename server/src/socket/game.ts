@@ -10,8 +10,8 @@ import {
   START_MY_TURN,
   END_MY_TURN,
   TOGGLE_READY,
-} from "../constants/socket";
-import { RoomType, SocketType } from "../loader/socket";
+} from "@constants/socket";
+import { SocketType } from "@loader/socket";
 const game = ({ io, socket, rooms }: SocketType) => {
   const randomAnswer = () => {
     // TODO: random keyword

@@ -10,8 +10,8 @@ import {
   FULL_ROOM_ERROR,
   JOIN_ROOM,
   ROOM_LIST,
-} from "../constants/socket";
-import { RoomInfoType, RoomType, SocketType } from "../loader/socket";
+} from "@constants/socket";
+import { RoomInfoType, RoomType, SocketType } from "@loader/socket";
 
 const join = ({ io, socket, rooms }: SocketType) => {
   const createRoomCode = (rooms: RoomType) => {
