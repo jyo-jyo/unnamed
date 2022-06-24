@@ -1,5 +1,5 @@
 import React from "react";
-import { ModalContainer } from "@components/common/Modal.style";
+import { ModalContainer } from "@components/common/Modal/Modal.style";
 
 const Modal = ({
   isOpen,

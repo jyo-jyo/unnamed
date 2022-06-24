@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Board from "@components/Room/Board";
-import ChatList from "@components/Room/ChatList";
-import UserList from "@components/Room/UserList";
+import Board from "@components/Board";
+import ChatList from "@components/ChatList";
+import UserList from "@components/UserList";
 import useRoomCode from "@hooks/useRoomCode";
 import Socket from "@socket/index";
 import { RoomContainer } from "@pages/Room.style";

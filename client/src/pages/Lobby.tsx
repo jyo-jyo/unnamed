@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateRoomModal from "@components/Lobby/CreateRoomModal";
-import RoomList from "@components/Lobby/RoomList";
+import CreateRoomModal from "@components/CreateRoomModal";
+import RoomList from "@components/RoomList";
 import Socket from "@socket/index";
 import Header from "@components/common/Header";
 

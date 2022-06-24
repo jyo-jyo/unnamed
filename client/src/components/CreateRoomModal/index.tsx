@@ -5,7 +5,7 @@ import {
   CreateRoomModalContainer,
   DropBoxInputBox,
   InputBox,
-} from "@components/Lobby/CreateRoomModal.style";
+} from "@components/CreateRoomModal/CreateRoomModal.style";
 import { USER_OPTIONS, ROUND_OPTIONS } from "@constants/constant";
 
 const CreateRoomModal = ({

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { BoardContainer } from "@components/Room/Board.style";
+import { BoardContainer } from "@components/Board/Board.style";
 import Socket from "@socket/index";
 
 const Board = () => {

@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import Room from "@components/Lobby/Room";
+import Room from "@components/RoomList/Room";
 import { RoomInfoType } from "@src/@types";
 import Socket from "@socket/index";
 import {
   RoomListContainer,
   RoomListBox,
-} from "@components/Lobby/RoomList.style";
+} from "@components/RoomList/RoomList.style";
 const RoomList = () => {
   const [rooms, setRooms] = useState<RoomInfoType>({});
   const socket = useRef<any>();

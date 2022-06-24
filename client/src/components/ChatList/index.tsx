@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Socket from "@socket/index";
 import useRoomCode from "@hooks/useRoomCode";
-import Chat from "@components/Room/Chat";
+import Chat from "@components/ChatList/Chat";
 import { ChatType } from "@src/@types";
 
 const ChatList = ({ id }: { id: string }) => {
