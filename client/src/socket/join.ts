@@ -10,8 +10,8 @@ import {
   EXIT_ROOM,
   START_GAME,
   READY_ERROR,
-} from "../constants/socket";
-import { UserType } from "../pages/Room";
+} from "@constants/socket";
+import { UserType } from "@pages/Room";
 
 const join = (socket: Socket) => (closure: any) => {
   const { setUsers, setRoomInfo, back } = closure;

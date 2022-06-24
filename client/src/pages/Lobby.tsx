@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateRoomModal from "../components/Lobby/CreateRoomModal";
-import RoomList from "../components/Lobby/RoomList";
-import Socket from "../socket";
-import Header from "../components/common/Header";
+import CreateRoomModal from "@components/Lobby/CreateRoomModal";
+import RoomList from "@components/Lobby/RoomList";
+import Socket from "@socket/index";
+import Header from "@components/common/Header";
 export interface RoomInfo {
   roomName: string;
   numberOfUser: number;

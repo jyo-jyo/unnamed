@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { RoomContainer, RoomTitleBox, RoomInfoBox } from "./Room.style";
-import { RoomInfo } from "../../pages/Lobby";
+import {
+  RoomContainer,
+  RoomTitleBox,
+  RoomInfoBox,
+} from "@components/Lobby/Room.style";
+import { RoomInfo } from "@pages/Lobby";
 const Room = ({
   roomCode,
   roomInfo,
