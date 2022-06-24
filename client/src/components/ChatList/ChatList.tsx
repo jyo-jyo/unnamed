@@ -6,18 +6,20 @@ import { ChatType } from "@src/@types";
 
 const ChatList = () => {
   const chatRef = useRef<HTMLInputElement>(null);
-  const socket = useRef<any>(null);
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const roomCode = useRoomCode();
   const id = Socket.getSID();
+  const socket = useRef<any>(null);
 
   const addNewChat = (newChat: ChatType) => {
     setChatList((prev) => [...prev, newChat]);
   };
 
   useEffect(() => {
-    if (socket.current) return;
     socket.current = Socket.chat({ addNewChat });
+    return () => {
+      socket.current.disconnecting();
+    };
   }, []);
 
   const handleKeyDown = ({ code }: React.KeyboardEvent) => {

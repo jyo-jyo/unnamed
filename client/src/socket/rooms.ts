@@ -2,10 +2,10 @@ import { Socket } from "socket.io-client";
 import { ROOM_LIST } from "@constants/socket";
 
 const rooms = (socket: Socket) => (closure: any) => {
-  const { loadRooms } = closure;
+  const { setRooms } = closure;
 
   socket.on(ROOM_LIST, (rooms) => {
-    loadRooms(rooms);
+    setRooms(rooms);
   });
 
   const getRooms = () => {

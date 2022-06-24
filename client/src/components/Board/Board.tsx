@@ -15,7 +15,6 @@ const Board = () => {
   const endMyTurn = () => setIsMyTurn(false);
 
   useEffect(() => {
-    if (socket.current) return;
     socket.current = Socket.drawing({
       otherDrawing: drawing,
       startMyTurn,
@@ -23,7 +22,7 @@ const Board = () => {
     });
 
     return () => {
-      // socket.current.disconnecting();
+      socket.current.disconnecting();
     };
   }, []);
 

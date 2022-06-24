@@ -1,12 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Board } from "@components/Board";
 import { ChatList } from "@components/ChatList";
 import { UserList } from "@components/UserList";
 import useRoomCode from "@hooks/useRoomCode";
 import Socket from "@socket/index";
-import { RoomContainer } from "@pages/Room.style";
+import {
+  RoomContainer,
+  RoomHeaderContainer,
+  ExitButton,
+} from "@pages/Room.style";
 import { RoomType, UserType } from "@src/@types";
+import { Header } from "@components/common";
 
 const Room = () => {
   const nav = useNavigate();
@@ -19,7 +24,7 @@ const Room = () => {
 
   const back = () => {
     socket.current.disconnecting();
-    nav(-1);
+    nav("/", { replace: true });
   };
 
   const exitRoom = () => {
@@ -28,7 +33,7 @@ const Room = () => {
     back();
   };
 
-  const toggleMyReady = () => {
+  const toggleReady = () => {
     setIsReady((prev) => {
       const isReady = !prev;
       socket.current.ready(roomCode, isReady);
@@ -63,24 +68,24 @@ const Room = () => {
     <></>
   ) : (
     <RoomContainer>
-      <div>
-        <div>
-          <button onClick={exitRoom}>◀</button>
+      <Header>
+        <RoomHeaderContainer>
+          <div>
+            <ExitButton onClick={exitRoom}>◀</ExitButton>
+            <span>{roomInfo?.roomSettings.roomName}</span>
+            <span>{roomInfo?.roomSettings.isLocked}</span>
+          </div>
           {!roomInfo?.gameState.isPlaying && isHost() ? (
             <button onClick={() => socket.current.startGame(roomCode)}>
               게임시작
             </button>
           ) : (
-            <button onClick={toggleMyReady}>
+            <button onClick={toggleReady}>
               {isReady ? "준비해제" : "준비완료"}
             </button>
           )}
-        </div>
-        <div>
-          <span>{roomInfo?.roomSettings.roomName}</span>
-          <span>{roomInfo?.roomSettings.isLocked}</span>
-        </div>
-      </div>
+        </RoomHeaderContainer>
+      </Header>
       <UserList
         users={users}
         hostId={roomInfo?.hostId}

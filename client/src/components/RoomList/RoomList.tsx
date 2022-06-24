@@ -5,24 +5,23 @@ import Socket from "@socket/index";
 import { RoomListContainer, RoomListBox } from "./RoomList.style";
 const RoomList = () => {
   const [rooms, setRooms] = useState<RoomInfoType>({});
-  const socket = useRef<any>();
+  const socket = useRef<any>(null);
 
-  const loadRooms = (rooms: RoomInfoType) => {
-    setRooms(rooms);
+  const loadRooms = () => {
+    socket.current.getRooms();
   };
 
   useEffect(() => {
-    if (socket.current) return;
-    socket.current = Socket.rooms({ loadRooms });
-    socket.current.getRooms();
+    socket.current = Socket.rooms({ setRooms });
+    loadRooms();
     return () => {
-      // socket.current.disconnecting();
+      socket.current.disconnecting();
     };
   }, []);
 
   return (
     <RoomListContainer>
-      <button onClick={() => socket.current.getRooms()}>새로고침</button>
+      <button onClick={loadRooms}>새로고침</button>
       <RoomListBox>
         {Object.keys(rooms).map((roomCode: string, index) => {
           const room = rooms[roomCode];
