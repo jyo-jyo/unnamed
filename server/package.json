@@ -4,14 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec ts-node src/app.ts",
+    "start": "nodemon --exec ts-node -r tsconfig-paths/register ./src/app.ts",
+    "build": "tsc -P ./tsconfig.json && babel dist -d dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.16",
-    "ts-node": "^10.8.0"
+    "ts-node": "^10.8.0",
+    "tsconfig-paths": "^4.0.0"
   },
   "dependencies": {
     "@types/cookie-parser": "^1.4.3",
