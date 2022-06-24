@@ -12,8 +12,8 @@ const UserList = ({
     <>
       {users.map(({ id, isReady, userName }, index) => (
         <UserProfileBox isReady={isReady} key={index}>
-          <p>{userName}</p>
-          {hostId !== id ? <p>{isReady ? "준비완" : "노준비"}</p> : <></>}
+          <span>{userName}</span>
+          {hostId !== id ? <span>{isReady ? "준비완" : "노준비"}</span> : <></>}
         </UserProfileBox>
       ))}
     </>

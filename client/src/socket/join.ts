@@ -47,10 +47,6 @@ const join = (socket: Socket) => (closure: any) => {
     alert(READY_ERROR);
   });
 
-  socket.on(START_GAME, () => {
-    alert(START_GAME);
-  });
-
   const joinRoom = (roomCode: string) => socket.emit(JOIN_ROOM, { roomCode });
 
   const exitRoom = (roomCode: string) => {

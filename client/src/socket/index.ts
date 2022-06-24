@@ -4,6 +4,7 @@ import join from "./join";
 import rooms from "./rooms";
 import drawing from "./drawing";
 import create from "./create";
+import chat from "./chat";
 
 const Socket = () => {
   const socket = io(BACK_BASE_URL, {
@@ -22,6 +23,7 @@ const Socket = () => {
     rooms: rooms(socket),
     join: join(socket),
     drawing: drawing(socket),
+    chat: chat(socket),
   };
 };
 export default Socket();

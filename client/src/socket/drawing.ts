@@ -4,20 +4,25 @@ import {
   OTHER_DRAWING,
   START_MY_TURN,
   END_MY_TURN,
+  START_GAME,
 } from "../constants/socket";
 
 const drawing = (socket: Socket) => (closure: any) => {
   const { otherDrawing, startMyTurn, endMyTurn } = closure;
 
   socket.on(OTHER_DRAWING, (drawingData) => {
-    console.log("other");
     otherDrawing(drawingData);
   });
 
-  socket.on(START_MY_TURN, () => {
+  socket.on(START_MY_TURN, ({ answer }) => {
+    alert(answer);
     startMyTurn();
   });
   socket.on(END_MY_TURN, () => {
+    endMyTurn();
+  });
+
+  socket.on(START_GAME, () => {
     endMyTurn();
   });
 
@@ -34,6 +39,7 @@ const drawing = (socket: Socket) => (closure: any) => {
   }) => socket.emit(DRAWING, { roomCode, drawingData });
 
   const disconnecting = () => {
+    socket.off(START_GAME);
     socket.off(OTHER_DRAWING);
     socket.off(START_MY_TURN);
     socket.off(END_MY_TURN);

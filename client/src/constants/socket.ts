@@ -23,3 +23,6 @@ export const READY_ERROR = "READY_ERROR";
 export const NEXT_TURN = "NEXT_TURN";
 export const START_MY_TURN = "START_MY_TURN";
 export const END_MY_TURN = "END_MY_TURN";
+
+export const SEND_CHAT = "SEND_CHAT";
+export const RECEIVE_CHAT = "RECEIVE_CHAT";
