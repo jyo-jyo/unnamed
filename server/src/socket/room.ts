@@ -7,11 +7,13 @@ import {
   EXIT_ROOM,
   EXIT_USER,
   FULL_ROOM_ERROR,
+  GAME_TIME,
   JOIN_ROOM,
   ROOM_LIST,
+  START_MY_TURN,
 } from "@constants/socket";
 
-import { RoomInfoType, RoomType, SocketType } from "@src/@types";
+import { RoomInfoType, RoomType, SocketType, UserType } from "@src/@types";
 
 const join = ({ io, socket, rooms }: SocketType) => {
   const createRoomCode = (rooms: RoomType) => {
@@ -50,7 +52,7 @@ const join = ({ io, socket, rooms }: SocketType) => {
         game: null,
         answer: "",
         currOrder: 0,
-        currRound: 0,
+        currRound: 1,
       },
       roomSettings,
     };
@@ -68,19 +70,6 @@ const join = ({ io, socket, rooms }: SocketType) => {
     room.users.push(user);
     socket.emit(ENTER_OTHER_USER, room.users, room);
     socket.broadcast.to(roomCode).emit(ENTER_ONE_USER, user);
-  });
-
-  socket.on(EXIT_ROOM, ({ roomCode }) => {
-    if (!(roomCode in rooms)) return socket.emit(EXIST_ROOM_ERROR);
-    // TODO: 방장권한, 게임이 진행 중인 경우...
-    socket.leave(roomCode);
-    const room = rooms[roomCode];
-    room.users = room.users.filter(({ id }) => id !== socket.id);
-    if (room.users.length === 0) {
-      delete rooms[roomCode];
-      return;
-    }
-    socket.broadcast.to(roomCode).emit(EXIT_USER, socket.id);
   });
 
   return { io, socket, rooms };
