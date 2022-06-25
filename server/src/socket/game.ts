@@ -29,11 +29,15 @@ const game = ({ io, socket, rooms }: SocketType) => {
 
   const nextTurn = ({ roomCode }: { roomCode: string }) => {
     const room = rooms[roomCode];
+
     if (room.gameState.game) clearTimeout(room.gameState.game);
+
+    console.log(room.gameState.game);
     if (++room.gameState.currRound > room.roomSettings.totalRound) {
       // TODO: 게임 종료 점수 전송
       io.to(roomCode).emit(END_GAME);
       room.gameState = initGameState();
+      return;
     }
     io.to(room.users[room.gameState.currOrder].id).emit(END_MY_TURN);
     if (++room.gameState.currOrder === room.roomSettings.maximumOfUser)
