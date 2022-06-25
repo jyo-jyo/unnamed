@@ -7,7 +7,6 @@ import {
   ENTER_OTHER_USER,
   TOGGLE_READY,
   EXIT_USER,
-  EXIT_ROOM,
   START_GAME,
   READY_ERROR,
 } from "@constants/socket";
@@ -27,6 +26,7 @@ const join = (socket: Socket) => (closure: any) => {
   });
 
   socket.on(ENTER_ONE_USER, (user) => {
+    console.log(user);
     setUsers((prev: UserType[]) => [...prev, user]);
   });
 
@@ -49,11 +49,6 @@ const join = (socket: Socket) => (closure: any) => {
 
   const joinRoom = (roomCode: string) => socket.emit(JOIN_ROOM, { roomCode });
 
-  const exitRoom = (roomCode: string) => {
-    socket.emit(EXIT_ROOM, { roomCode });
-    disconnecting();
-  };
-
   const ready = (roomCode: string, isReady: boolean) =>
     socket.emit(TOGGLE_READY, { roomCode, isReady });
 
@@ -65,9 +60,11 @@ const join = (socket: Socket) => (closure: any) => {
     socket.off(ENTER_ONE_USER);
     socket.off(ENTER_OTHER_USER);
     socket.off(EXIT_USER);
+    socket.off(TOGGLE_READY);
+    socket.off(READY_ERROR);
   };
 
-  return { joinRoom, exitRoom, ready, startGame, disconnecting };
+  return { joinRoom, ready, startGame, disconnecting };
 };
 
 export default join;

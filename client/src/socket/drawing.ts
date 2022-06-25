@@ -5,6 +5,7 @@ import {
   START_MY_TURN,
   END_MY_TURN,
   START_GAME,
+  END_GAME,
 } from "@constants/socket";
 
 const drawing = (socket: Socket) => (closure: any) => {
@@ -24,6 +25,10 @@ const drawing = (socket: Socket) => (closure: any) => {
 
   socket.on(START_GAME, () => {
     endMyTurn();
+  });
+
+  socket.on(END_GAME, () => {
+    alert(END_GAME);
   });
 
   const drawing = ({

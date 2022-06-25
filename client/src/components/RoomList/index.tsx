@@ -1,39 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import Room from "@components/RoomList/Room";
-import { RoomInfoType } from "@src/@types";
-import Socket from "@socket/index";
-import {
-  RoomListContainer,
-  RoomListBox,
-} from "@components/RoomList/RoomList.style";
-const RoomList = () => {
-  const [rooms, setRooms] = useState<RoomInfoType>({});
-  const socket = useRef<any>();
+import Room from "./Room";
+import RoomList from "./RoomList";
 
-  const loadRooms = (rooms: RoomInfoType) => {
-    setRooms(rooms);
-  };
-
-  useEffect(() => {
-    if (socket.current) return;
-    socket.current = Socket.rooms({ loadRooms });
-    socket.current.getRooms();
-    return () => {
-      // socket.current.disconnecting();
-    };
-  }, []);
-
-  return (
-    <RoomListContainer>
-      <button onClick={() => socket.current.getRooms()}>새로고침</button>
-      <RoomListBox>
-        {Object.keys(rooms).map((roomCode: string, index) => {
-          const room = rooms[roomCode];
-          return <Room roomCode={roomCode} roomInfo={room} key={index} />;
-        })}
-      </RoomListBox>
-    </RoomListContainer>
-  );
-};
-
-export default RoomList;
+export { Room, RoomList };
