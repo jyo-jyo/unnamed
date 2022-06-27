@@ -1,5 +1,5 @@
 import { Socket } from "socket.io-client";
-import { ROOM_LIST } from "@constants/socket";
+import { ROOM_LIST } from "common";
 
 const rooms = (socket: Socket) => (closure: any) => {
   const { setRooms } = closure;

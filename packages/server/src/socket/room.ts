@@ -4,14 +4,10 @@ import {
   ENTER_ONE_USER,
   ENTER_OTHER_USER,
   EXIST_ROOM_ERROR,
-  EXIT_ROOM,
-  EXIT_USER,
   FULL_ROOM_ERROR,
-  GAME_TIME,
   JOIN_ROOM,
   ROOM_LIST,
-  START_MY_TURN,
-} from "@constants/socket";
+} from "common";
 
 import { RoomInfoType, RoomType, SocketType, UserType } from "@src/@types";
 

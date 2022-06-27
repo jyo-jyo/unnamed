@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { CreateRoomModal } from "@src/components/CreateRoomModal";
 import { RoomList } from "@src/components/RoomList";

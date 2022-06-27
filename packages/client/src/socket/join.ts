@@ -9,7 +9,7 @@ import {
   EXIT_USER,
   START_GAME,
   READY_ERROR,
-} from "@constants/socket";
+} from "common";
 import { UserType } from "@src/@types";
 
 const join = (socket: Socket) => (closure: any) => {

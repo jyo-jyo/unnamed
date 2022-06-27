@@ -27,3 +27,5 @@ export const END_MY_TURN = "END_MY_TURN";
 
 export const SEND_CHAT = "SEND_CHAT";
 export const RECEIVE_CHAT = "RECEIVE_CHAT";
+
+export const GAME_TIME = 30;

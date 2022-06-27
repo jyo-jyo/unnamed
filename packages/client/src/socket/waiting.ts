@@ -1,10 +1,5 @@
 import { Socket } from "socket.io-client";
-import {
-  EXIT_ROOM,
-  READY_ERROR,
-  START_GAME,
-  TOGGLE_READY,
-} from "@constants/socket";
+import { EXIT_ROOM, READY_ERROR, START_GAME, TOGGLE_READY } from "common";
 import { RoomType } from "@src/@types";
 
 const waiting = (socket: Socket) => (closure: any) => {

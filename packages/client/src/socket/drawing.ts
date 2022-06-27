@@ -1,4 +1,5 @@
 import { Socket } from "socket.io-client";
+
 import {
   DRAWING,
   OTHER_DRAWING,
@@ -6,7 +7,7 @@ import {
   END_MY_TURN,
   START_GAME,
   END_GAME,
-} from "@constants/socket";
+} from "common";
 
 const drawing = (socket: Socket) => (closure: any) => {
   const { otherDrawing, startMyTurn, endMyTurn } = closure;

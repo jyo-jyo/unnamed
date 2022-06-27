@@ -12,7 +12,7 @@ import {
   EXIT_ROOM,
   EXIST_ROOM_ERROR,
   EXIT_USER,
-} from "@constants/socket";
+} from "common";
 import { SocketType, UserType } from "@src/@types";
 
 const game = ({ io, socket, rooms }: SocketType) => {

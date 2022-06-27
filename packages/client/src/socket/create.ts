@@ -1,5 +1,5 @@
 import { Socket } from "socket.io-client";
-import { CREATE_ROOM, CREATE_SUCCESS } from "@constants/socket";
+import { CREATE_ROOM, CREATE_SUCCESS } from "common";
 
 const create = (socket: Socket) => (closure: any) => {
   const { joining } = closure;
