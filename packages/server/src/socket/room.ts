@@ -9,10 +9,11 @@ import {
   ROOM_LIST,
 } from "common";
 
-import { RoomInfoType, RoomType, SocketType, UserType } from "@src/@types";
+import { SocketProps } from "@src/@types";
+import { RoomsInfo, Rooms } from "common";
 
-const join = ({ io, socket, rooms }: SocketType) => {
-  const createRoomCode = (rooms: RoomType) => {
+const join = ({ io, socket, rooms }: SocketProps) => {
+  const createRoomCode = (rooms: Rooms) => {
     while (true) {
       const code = Math.random().toString(16).substr(2, 5);
       if (!(code in rooms)) return code;
@@ -20,21 +21,18 @@ const join = ({ io, socket, rooms }: SocketType) => {
   };
 
   socket.on(ROOM_LIST, () => {
-    const roomsInfo = Object.keys(rooms).reduce(
-      (acc: RoomInfoType, roomCode) => {
-        const room = rooms[roomCode];
-        acc[roomCode] = {
-          roomName: room.roomSettings.roomName,
-          numberOfUser: room.users.length,
-          maximumOfUser: room.roomSettings.maximumOfUser,
-          totalRound: room.roomSettings.totalRound,
-          isPlaying: room.gameState.isPlaying,
-          isLocked: room.roomSettings.isLocked,
-        };
-        return acc;
-      },
-      {}
-    );
+    const roomsInfo = Object.keys(rooms).reduce((acc: RoomsInfo, roomCode) => {
+      const room = rooms[roomCode];
+      acc[roomCode] = {
+        roomName: room.roomSettings.roomName,
+        numberOfUser: room.users.length,
+        maximumOfUser: room.roomSettings.maximumOfUser,
+        totalRound: room.roomSettings.totalRound,
+        isPlaying: room.gameState.isPlaying,
+        isLocked: room.roomSettings.isLocked,
+      };
+      return acc;
+    }, {});
     socket.emit(ROOM_LIST, roomsInfo);
   });
 

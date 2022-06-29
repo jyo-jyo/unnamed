@@ -5,7 +5,7 @@ import {
   RoomTitleBox,
   RoomInfoBox,
 } from "@components/RoomList/Room.style";
-import { RoomInfo } from "@src/@types";
+import { RoomInfo } from "common";
 const Room = ({
   roomCode,
   roomInfo,

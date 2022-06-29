@@ -13,9 +13,10 @@ import {
   EXIST_ROOM_ERROR,
   EXIT_USER,
 } from "common";
-import { SocketType, UserType } from "@src/@types";
+import { SocketProps } from "@src/@types";
+import { User } from "common";
 
-const game = ({ io, socket, rooms }: SocketType) => {
+const game = ({ io, socket, rooms }: SocketProps) => {
   const randomAnswer = () => {
     // TODO: random keyword
     return "배고파";
@@ -71,7 +72,7 @@ const game = ({ io, socket, rooms }: SocketType) => {
     nextTurn({ roomCode });
   };
 
-  const indexOfUsers = (id: string, users: UserType[]) => {
+  const indexOfUsers = (id: string, users: User[]) => {
     for (let i = 0; i < users.length; i++) {
       if (users[i].id === socket.id) return i;
     }

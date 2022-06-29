@@ -5,10 +5,10 @@ import { DRAWING, OTHER_DRAWING } from "common";
 import game from "@socket/game";
 import join from "@socket/room";
 import pipe from "@utils/pipe";
-import { RoomType } from "@src/@types";
+import { Rooms } from "common";
 
 const socketLoader = (server: any, app: any): any => {
-  const rooms = <RoomType>{};
+  const rooms = <Rooms>{};
   const io = new Server(server, {
     cors: {
       origin: FRONT_BASE_URL,

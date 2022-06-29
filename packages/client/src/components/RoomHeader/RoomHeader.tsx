@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Socket from "@socket/index";
 import { Header } from "@components/common";
 import { RoomHeaderContainer, ExitButton } from "./RoomHeader.style";
-import { RoomType } from "@src/@types";
+import { Room } from "common";
 import useRoomCode from "@hooks/useRoomCode";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ const RoomHeader = ({
   setRoomInfo,
   setUsers,
 }: {
-  roomInfo: RoomType | undefined;
+  roomInfo: Room | undefined;
   setRoomInfo: Function;
   setUsers: Function;
 }) => {

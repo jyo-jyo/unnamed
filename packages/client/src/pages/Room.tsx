@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Board } from "@components/Board";
 import { ChatList } from "@components/ChatList";
@@ -6,13 +6,13 @@ import { UserList } from "@components/UserList";
 import useRoomCode from "@hooks/useRoomCode";
 import Socket from "@socket/index";
 import { RoomContainer } from "@pages/Room.style";
-import { RoomType, UserType } from "@src/@types";
+import Type from "common";
 import { RoomHeader } from "@src/components/RoomHeader";
 
 const Room = () => {
   const nav = useNavigate();
-  const [roomInfo, setRoomInfo] = useState<RoomType>();
-  const [users, setUsers] = useState<UserType[]>([]);
+  const [roomInfo, setRoomInfo] = useState<Type.Room>();
+  const [users, setUsers] = useState<Type.User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const socket = useRef<any>(null);
   const roomCode = useRoomCode();

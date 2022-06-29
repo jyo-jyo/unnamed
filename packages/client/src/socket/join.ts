@@ -10,7 +10,8 @@ import {
   START_GAME,
   READY_ERROR,
 } from "common";
-import { UserType } from "@src/@types";
+
+import { User } from "common";
 
 const join = (socket: Socket) => (closure: any) => {
   const { setUsers, setRoomInfo, back } = closure;
@@ -27,7 +28,7 @@ const join = (socket: Socket) => (closure: any) => {
 
   socket.on(ENTER_ONE_USER, (user) => {
     console.log(user);
-    setUsers((prev: UserType[]) => [...prev, user]);
+    setUsers((prev: User[]) => [...prev, user]);
   });
 
   socket.on(ENTER_OTHER_USER, (users, roomInfo) => {
@@ -36,7 +37,7 @@ const join = (socket: Socket) => (closure: any) => {
   });
 
   socket.on(EXIT_USER, (exitId) => {
-    setUsers((prev: UserType[]) => prev.filter(({ id }) => id !== exitId));
+    setUsers((prev: User[]) => prev.filter(({ id }) => id !== exitId));
   });
 
   socket.on(TOGGLE_READY, (users) => {

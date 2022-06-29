@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
 import { EXIT_ROOM, READY_ERROR, START_GAME, TOGGLE_READY } from "common";
-import { RoomType } from "@src/@types";
+import { Room } from "common";
 
 const waiting = (socket: Socket) => (closure: any) => {
   const { setUsers, setRoomInfo } = closure;
@@ -14,7 +14,7 @@ const waiting = (socket: Socket) => (closure: any) => {
   });
 
   socket.on(START_GAME, () => {
-    setRoomInfo((prev: RoomType) => {
+    setRoomInfo((prev: Room) => {
       const roomInfo = Object.assign({}, prev);
       roomInfo.gameState.isPlaying = true;
       return roomInfo;

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Room } from "@components/RoomList";
-import { RoomInfoType } from "@src/@types";
+import { RoomsInfo } from "common";
 import Socket from "@socket/index";
 import { RoomListContainer, RoomListBox } from "./RoomList.style";
 const RoomList = () => {
-  const [rooms, setRooms] = useState<RoomInfoType>({});
+  const [rooms, setRooms] = useState<RoomsInfo>({});
   const socket = useRef<any>(null);
 
   const loadRooms = () => {

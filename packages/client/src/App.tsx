@@ -5,7 +5,6 @@ import GlobalStyle from "@src/GlobalStyle";
 function App() {
   return (
     <>
-      <GlobalStyle />
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Lobby />} />

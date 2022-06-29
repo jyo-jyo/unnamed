@@ -1,12 +1,12 @@
 import React from "react";
-import { UserType } from "@src/@types";
+import { User } from "common";
 import { UserProfileBox } from "./UserList.style";
 const UserList = ({
   users,
   hostId,
   isPlaying,
 }: {
-  users: UserType[];
+  users: User[];
   hostId: string | undefined | null;
   isPlaying: boolean | undefined;
 }) => {
