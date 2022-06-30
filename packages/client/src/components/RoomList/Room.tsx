@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  RoomContainer,
-  RoomTitleBox,
-  RoomInfoBox,
-} from "@components/RoomList/Room.style";
+import { RoomContainer, RoomTitleBox, RoomInfoBox } from "./Room.style";
 import { RoomInfo } from "common";
 const Room = ({
   roomCode,

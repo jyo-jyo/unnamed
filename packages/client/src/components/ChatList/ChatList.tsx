@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import Socket from "@socket/index";
-import useRoomCode from "@hooks/useRoomCode";
-import { Chat } from "@components/ChatList";
-import { ChatType } from "@src/@types";
+import Socket from "@socket";
+import { useRoomCode } from "@src/hooks";
+import { Chat } from "@src/components";
+import { ChatType } from "@types";
 
 const ChatList = () => {
   const chatRef = useRef<HTMLInputElement>(null);

@@ -1,3 +1,9 @@
+export interface User {
+  socketId: string;
+  userName: string;
+  isReady: boolean;
+}
+
 export interface Room {
   hostId: string | null;
   users: User[];
@@ -32,10 +38,4 @@ export interface RoomInfo {
 
 export interface RoomsInfo {
   [roomCode: string]: RoomInfo;
-}
-
-export interface User {
-  id: string;
-  isReady: boolean;
-  userName: string;
 }

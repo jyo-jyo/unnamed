@@ -9,7 +9,7 @@ import {
   ROOM_LIST,
 } from "common";
 
-import { SocketProps } from "@src/@types";
+import { SocketProps } from "@types";
 import { RoomsInfo, Rooms } from "common";
 
 const join = ({ io, socket, rooms }: SocketProps) => {

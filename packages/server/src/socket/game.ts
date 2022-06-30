@@ -13,7 +13,8 @@ import {
   EXIST_ROOM_ERROR,
   EXIT_USER,
 } from "common";
-import { SocketProps } from "@src/@types";
+
+import { SocketProps } from "@types";
 import { User } from "common";
 
 const game = ({ io, socket, rooms }: SocketProps) => {

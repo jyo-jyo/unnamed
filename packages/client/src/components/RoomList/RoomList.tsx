@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Room } from "@components/RoomList";
+import { Room } from "@src/components";
 import { RoomsInfo } from "common";
-import Socket from "@socket/index";
+import Socket from "@socket";
 import { RoomListContainer, RoomListBox } from "./RoomList.style";
 const RoomList = () => {
   const [rooms, setRooms] = useState<RoomsInfo>({});

@@ -1,11 +1,11 @@
 import io from "socket.io-client";
 import { BACK_BASE_URL } from "@constants/constant";
-import join from "@socket/join";
-import rooms from "@socket/rooms";
-import drawing from "@socket/drawing";
-import create from "@socket/create";
-import chat from "@socket/chat";
-import waiting from "@socket/waiting";
+import join from "./join";
+import rooms from "./rooms";
+import drawing from "./drawing";
+import create from "./create";
+import chat from "./chat";
+import waiting from "./waiting";
 
 const Socket = () => {
   const socket = io(BACK_BASE_URL, {

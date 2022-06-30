@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import Socket from "@socket/index";
-import { Header } from "@components/common";
+import Socket from "@socket";
+import { Header } from "@src/components";
 import { RoomHeaderContainer, ExitButton } from "./RoomHeader.style";
 import { Room } from "common";
-import useRoomCode from "@hooks/useRoomCode";
+import { useRoomCode } from "@src/hooks";
 import { useNavigate } from "react-router-dom";
 
 const RoomHeader = ({

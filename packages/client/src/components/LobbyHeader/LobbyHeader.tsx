@@ -1,5 +1,5 @@
 import React, { MouseEventHandler, useRef } from "react";
-import { Header } from "../common";
+import { Header } from "@src/components";
 
 const LobbyHeader = ({
   joining,

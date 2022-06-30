@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { CreateRoomModal } from "@src/components/CreateRoomModal";
-import { RoomList } from "@src/components/RoomList";
-import Socket from "@socket/index";
-import { LobbyHeader } from "@src/components/LobbyHeader";
+import { LobbyHeader, RoomList, CreateRoomModal } from "@src/components";
+import Socket from "@socket";
 
 const Lobby = () => {
   const nav = useNavigate();

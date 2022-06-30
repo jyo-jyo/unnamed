@@ -1,2 +1,2 @@
 export * from "./constants/socket";
-export * from "./constants/type";
+export * from "./constants/types";

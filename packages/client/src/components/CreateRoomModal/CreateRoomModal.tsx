@@ -1,11 +1,11 @@
 import React, { useRef, useState } from "react";
-import { DropBox, Modal } from "@components/common";
+import { DropBox, Modal } from "@src/components";
 import {
   CreateRoomModalContainer,
   DropBoxInputBox,
   InputBox,
 } from "./CreateRoomModal.style";
-import { USER_OPTIONS, ROUND_OPTIONS } from "@constants/constant";
+import { USER_OPTIONS, ROUND_OPTIONS } from "@src/constants";
 
 const CreateRoomModal = ({
   isOpen,
