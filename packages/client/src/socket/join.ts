@@ -1,9 +1,9 @@
 import { Socket } from "socket.io-client";
 import {
-  EXIST_ROOM_ERROR,
+  NOT_EXIST_ROOM_ERROR,
   FULL_ROOM_ERROR,
   JOIN_ROOM,
-  ENTER_ONE_USER,
+  OTHER_USER_LIST,
   ENTER_OTHER_USER,
   TOGGLE_READY,
   EXIT_USER,
@@ -16,9 +16,9 @@ import { User } from "common";
 const join = (socket: Socket) => (closure: any) => {
   const { setUsers, setRoomInfo, back } = closure;
 
-  socket.on(EXIST_ROOM_ERROR, () => {
+  socket.on(NOT_EXIST_ROOM_ERROR, () => {
     back();
-    alert(EXIST_ROOM_ERROR);
+    alert(NOT_EXIST_ROOM_ERROR);
   });
 
   socket.on(FULL_ROOM_ERROR, () => {
@@ -26,12 +26,12 @@ const join = (socket: Socket) => (closure: any) => {
     alert(FULL_ROOM_ERROR);
   });
 
-  socket.on(ENTER_ONE_USER, (user) => {
+  socket.on(ENTER_OTHER_USER, (user) => {
     console.log(user);
     setUsers((prev: User[]) => [...prev, user]);
   });
 
-  socket.on(ENTER_OTHER_USER, (users, roomInfo) => {
+  socket.on(OTHER_USER_LIST, (users, roomInfo) => {
     setUsers(users);
     setRoomInfo(roomInfo);
   });
@@ -56,9 +56,9 @@ const join = (socket: Socket) => (closure: any) => {
   const startGame = (roomCode: string) => socket.emit(START_GAME, { roomCode });
 
   const disconnecting = () => {
-    socket.off(EXIST_ROOM_ERROR);
+    socket.off(NOT_EXIST_ROOM_ERROR);
     socket.off(FULL_ROOM_ERROR);
-    socket.off(ENTER_ONE_USER);
+    socket.off(OTHER_USER_LIST);
     socket.off(ENTER_OTHER_USER);
     socket.off(EXIT_USER);
     socket.off(TOGGLE_READY);

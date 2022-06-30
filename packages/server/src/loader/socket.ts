@@ -7,7 +7,7 @@ import { pipe } from "@src/utils";
 import { Rooms } from "common";
 
 const socketLoader = (server: any, app: any): any => {
-  const rooms = <Rooms>{};
+  const rooms: Rooms = {};
   const io = new Server(server, {
     cors: {
       origin: FRONT_BASE_URL,

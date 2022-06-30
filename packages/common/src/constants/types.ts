@@ -3,8 +3,15 @@ export interface User {
   userName: string;
   isReady: boolean;
 }
+export interface RoomSetting {
+  roomName: string;
+  maximumOfUser: number;
+  totalRound: number;
+  isLocked: boolean;
+  password: string;
+}
 
-export interface Room {
+export interface RoomProps {
   hostId: string | null;
   users: User[];
   gameState: {
@@ -14,17 +21,19 @@ export interface Room {
     currOrder: number;
     currRound: number;
   };
-  roomSettings: {
-    roomName: string;
-    maximumOfUser: number;
-    totalRound: number;
-    isLocked: boolean;
-    password: string;
-  };
+  roomSetting: RoomSetting;
 }
 
 export interface Rooms {
-  [roomCode: string]: Room;
+  [roomCode: string]: RoomProps;
+}
+
+export interface RoomSettings {
+  roomName: string;
+  maximumOfUser: number;
+  totalRound: number;
+  isLocked: boolean;
+  password: string;
 }
 
 export interface RoomInfo {
