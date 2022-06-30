@@ -23,10 +23,6 @@
   "bugs": {
     "url": "https://github.com/jyo-jyo/unnamed/issues"
   },
-  "peerDependencies": {
-    "react": ">= 16.8.0 < 17",
-    "react-dom": ">= 16.8.0 < 17"
-  },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "11.13.0",
