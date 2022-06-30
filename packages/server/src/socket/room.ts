@@ -35,7 +35,7 @@ const join = ({ io, socket, rooms }: SocketProps) => {
   socket.on(CREATE_ROOM, ({ roomSettings }) => {
     const roomCode = createRoomCode();
     rooms[roomCode] = {
-      hostId: null,
+      hostId: socket.id,
       users: [],
       gameState: {
         isPlaying: false,
@@ -51,8 +51,8 @@ const join = ({ io, socket, rooms }: SocketProps) => {
 
   socket.on(JOIN_ROOM, ({ roomCode }: { roomCode: string }) => {
     if (!(roomCode in rooms)) return socket.emit(EXIST_ROOM_ERROR);
+
     const room = rooms[roomCode];
-    if (!room.hostId) room.hostId = socket.id;
     if (room.users.length === room.roomSettings.maximumOfUser)
       return socket.emit(FULL_ROOM_ERROR);
     socket.join(roomCode);
