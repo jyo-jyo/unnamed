@@ -11,24 +11,26 @@ import {
 } from "common";
 
 import { SocketProps } from "@types";
-import { RoomsInfo, Rooms } from "common";
+import { RoomsInfo, Rooms, Room } from "common";
 
 const join = ({ io, socket, rooms }: SocketProps) => {
   const createRoomCode = () => v4();
 
   socket.on(ROOM_LIST, () => {
-    const roomsInfo = Object.keys(rooms).reduce((acc: RoomsInfo, roomCode) => {
-      const room = rooms[roomCode];
-      acc[roomCode] = {
-        roomName: room.roomSettings.roomName,
-        numberOfUser: room.users.length,
-        maximumOfUser: room.roomSettings.maximumOfUser,
-        totalRound: room.roomSettings.totalRound,
-        isPlaying: room.gameState.isPlaying,
-        isLocked: room.roomSettings.isLocked,
-      };
-      return acc;
-    }, {});
+    const roomsInfo = Object.entries<Room>(rooms).reduce(
+      (acc: RoomsInfo, [roomCode, room]) => {
+        acc[roomCode] = {
+          roomName: room.roomSettings.roomName,
+          numberOfUser: room.users.length,
+          maximumOfUser: room.roomSettings.maximumOfUser,
+          totalRound: room.roomSettings.totalRound,
+          isPlaying: room.gameState.isPlaying,
+          isLocked: room.roomSettings.isLocked,
+        };
+        return acc;
+      },
+      {}
+    );
     socket.emit(ROOM_LIST, roomsInfo);
   });
 
@@ -55,9 +57,11 @@ const join = ({ io, socket, rooms }: SocketProps) => {
     const room = rooms[roomCode];
     if (room.users.length === room.roomSettings.maximumOfUser)
       return socket.emit(FULL_ROOM_ERROR);
+
     socket.join(roomCode);
     const user = { id: socket.id, isReady: false, userName: socket.id };
     room.users.push(user);
+
     socket.emit(ENTER_OTHER_USER, room.users, room);
     socket.broadcast.to(roomCode).emit(ENTER_ONE_USER, user);
   });
