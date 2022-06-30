@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import {
   CREATE_ROOM,
   CREATE_SUCCESS,
@@ -13,12 +14,7 @@ import { SocketProps } from "@types";
 import { RoomsInfo, Rooms } from "common";
 
 const join = ({ io, socket, rooms }: SocketProps) => {
-  const createRoomCode = (rooms: Rooms) => {
-    while (true) {
-      const code = Math.random().toString(16).substr(2, 5);
-      if (!(code in rooms)) return code;
-    }
-  };
+  const createRoomCode = () => v4();
 
   socket.on(ROOM_LIST, () => {
     const roomsInfo = Object.keys(rooms).reduce((acc: RoomsInfo, roomCode) => {
@@ -37,7 +33,7 @@ const join = ({ io, socket, rooms }: SocketProps) => {
   });
 
   socket.on(CREATE_ROOM, ({ roomSettings }) => {
-    const roomCode = createRoomCode(rooms);
+    const roomCode = createRoomCode();
     rooms[roomCode] = {
       hostId: null,
       users: [],
