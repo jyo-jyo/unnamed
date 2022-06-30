@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-import { BACK_BASE_URL } from "@constants/constant";
+import { BACK_BASE_URL } from "@src/constants";
 import join from "./join";
 import rooms from "./rooms";
 import drawing from "./drawing";
