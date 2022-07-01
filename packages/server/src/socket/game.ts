@@ -73,7 +73,7 @@ const game = ({ io, socket, rooms }: SocketProps) => {
       }, GAME_TIME * 1000),
     });
     io.to(roomCode).emit(START_GAME);
-    io.to(room.users[0].id).emit(START_MY_TURN, { answer });
+    io.to(room.getCurrUserId()).emit(START_MY_TURN, { answer });
   });
 
   socket.on(SEND_CHAT, ({ roomCode, message }) => {
@@ -91,7 +91,7 @@ const game = ({ io, socket, rooms }: SocketProps) => {
     // TODO: 방장권한, 게임이 진행 중인 경우...
     const room = rooms[roomCode];
     const currOrder = room.getCurrOrder();
-    const myOrder = room.indexOfUsers(socket.id);
+    const myOrder = room.getIndexOfUser(socket.id);
     socket.leave(roomCode);
     room.deleteUser({ index: myOrder });
     if (room.getNumOfUser() === 0) {

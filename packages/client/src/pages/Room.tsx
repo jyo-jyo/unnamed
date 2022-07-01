@@ -4,11 +4,11 @@ import { Board, ChatList, UserList, RoomHeader } from "@src/components";
 import Socket from "@socket";
 import { useRoomCode } from "@src/hooks";
 import { RoomContainer } from "./Room.style";
-import { Room as RoomType, User } from "common";
+import { User, RoomProps } from "common";
 
 const Room = () => {
   const nav = useNavigate();
-  const [roomInfo, setRoomInfo] = useState<RoomType>();
+  const [room, setRoom] = useState<RoomProps>();
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const socket = useRef<any>(null);
@@ -23,7 +23,7 @@ const Room = () => {
     if (socket.current) return;
     socket.current = Socket.join({
       setUsers,
-      setRoomInfo,
+      setRoom,
       back,
     });
     socket.current.joinRoom(roomCode);
@@ -35,23 +35,19 @@ const Room = () => {
 
   useEffect(() => {
     if (!isLoading) return;
-    if (users.length === 0) return;
+    if (users.length === 0 || !room) return;
     setIsLoading(false);
-  }, [users]);
+  }, [users, room]);
 
   return isLoading ? (
     <></>
   ) : (
     <RoomContainer>
-      <RoomHeader
-        roomInfo={roomInfo}
-        setRoomInfo={setRoomInfo}
-        setUsers={setUsers}
-      />
+      <RoomHeader room={room} setRoom={setRoom} setUsers={setUsers} />
       <UserList
         users={users}
-        hostId={roomInfo?.hostId}
-        isPlaying={roomInfo?.gameState.isPlaying}
+        hostId={room?.hostId}
+        isPlaying={room.gameState.isPlaying}
       />
       <Board />
       <ChatList />

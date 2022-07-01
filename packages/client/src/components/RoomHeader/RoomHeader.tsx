@@ -1,28 +1,27 @@
 import React, { useEffect, useState, useRef } from "react";
-import Socket from "@socket";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@src/components";
 import { RoomHeaderContainer, ExitButton } from "./RoomHeader.style";
-import { Room } from "common";
 import { useRoomCode } from "@src/hooks";
-import { useNavigate } from "react-router-dom";
+import Socket from "@socket";
+import { RoomProps } from "common";
 
 const RoomHeader = ({
-  roomInfo,
-  setRoomInfo,
+  room,
+  setRoom,
   setUsers,
 }: {
-  roomInfo: Room | undefined;
-  setRoomInfo: Function;
+  room?: RoomProps;
+  setRoom: Function;
   setUsers: Function;
 }) => {
   const [isReady, setIsReady] = useState<boolean>(false);
   const roomCode = useRoomCode();
   const socket = useRef<any>(null);
   const nav = useNavigate();
-  const isHost = () => roomInfo?.hostId === Socket.getSID();
 
   useEffect(() => {
-    socket.current = Socket.waiting({ setRoomInfo, setUsers });
+    socket.current = Socket.waiting({ setRoom, setUsers });
     return () => {
       socket.current.disconnecting();
     };
@@ -51,17 +50,16 @@ const RoomHeader = ({
       <RoomHeaderContainer>
         <div>
           <ExitButton onClick={exitRoom}>◀</ExitButton>
-          <span>{roomInfo?.roomSettings.roomName}</span>
-          <span>{roomInfo?.roomSettings.isLocked}</span>
+          <span>{room.roomSetting.roomName}</span>
+          <span>{room.roomSetting.isLocked}</span>
         </div>
-        {!roomInfo?.gameState.isPlaying &&
-          (isHost() ? (
-            <button onClick={startGame}>게임시작</button>
-          ) : (
-            <button onClick={toggleReady}>
-              {isReady ? "준비해제" : "준비완료"}
-            </button>
-          ))}
+        {!room.gameState.isPlaying && room.hostId === Socket.getSID() ? (
+          <button onClick={startGame}>게임시작</button>
+        ) : (
+          <button onClick={toggleReady}>
+            {isReady ? "준비해제" : "준비완료"}
+          </button>
+        )}
       </RoomHeaderContainer>
     </Header>
   );

@@ -1,63 +1,67 @@
-import { RoomProps, RoomSetting, User } from "src/types";
+import { RoomInfo, RoomSetting, User } from "src/types";
 
-export const Room = (function () {
-  function Room({
-    hostId,
-    roomSetting,
-  }: {
-    hostId: string;
-    roomSetting: RoomSetting;
-  }) {
-    this.hostId = hostId;
-    this.users = [];
-    this.gameState = {
-      isPlaying: false,
-      game: null,
-      answer: "",
-      currOrder: 0,
-      currRound: 0,
-    };
-    this.roomSetting = roomSetting;
-  }
-  Room.prototype.getNumOfUser = function () {
+function Room({
+  hostId,
+  roomSetting,
+}: {
+  hostId: string;
+  roomSetting: RoomSetting;
+}) {
+  this.hostId = hostId;
+  this.users = [];
+  this.gameState = {
+    isPlaying: false,
+    game: null,
+    answer: "",
+    currOrder: 0,
+    currRound: 0,
+  };
+  this.roomSetting = roomSetting;
+}
+
+Room.prototype = {
+  constructor: Room,
+  getNumOfUser: function (): number {
     return this.users.length;
-  };
-
-  Room.prototype.isFull = function () {
+  },
+  isFull: function (): boolean {
     return this.gameState.maximumOfUser <= this.getNumOfUser();
-  };
-
-  Room.prototype.isDone = function () {
+  },
+  isDone: function (): boolean {
     return this.gameState.currRound > this.roomSetting.totalRound;
-  };
+  },
 
-  Room.prototype.isPlaying = function () {
+  isPlaying: function (): boolean {
     return this.gameState.isPlaying;
-  };
+  },
 
-  Room.prototype.isCorrect = function (message) {
+  isCorrect: function (message): boolean {
     return this.gameState.answer === message;
-  };
+  },
 
-  Room.prototype.nextTurn = function (val) {
+  isHost: function (socketId): boolean {
+    return socketId === this.hostId;
+  },
+
+  nextTurn: function (val): void {
     this.clearGame();
     this.gameState.currOrder += val;
     if (this.gameState.currOrder === this.getNumOfUser())
       this.gameState.currOrder = 0;
     ++this.gameState.currRound;
-  };
+  },
 
-  Room.prototype.startGame = function ({ answer, game }) {
+  startGame: function ({ answer, game }): void {
     this.gameState.answer = answer;
     this.gameState.isPlaying = true;
     this.gameState.game = game;
-  };
+  },
 
-  Room.prototype.clearGame = function () {
+  clearGame: function (): void {
     if (this.gameState.game) clearTimeout(this.gameState.game);
-  };
+  },
 
-  Room.prototype.initGameState = function () {
+  initGameState: function (): void {
     this.clearGame();
     this.gameState = {
       isPlaying: false,
@@ -66,49 +70,185 @@ export const Room = (function () {
       currOrder: 0,
       currRound: 0,
     };
-  };
+  },
 
-  Room.prototype.addUser = function (user: User) {
+  addUser: function (user: User): void {
     this.users.push(user);
-  };
-  Room.prototype.deleteUser = function ({ index }) {
+  },
+  deleteUser: function ({ index }): void {
     this.users = this.users.filter((_, idx) => idx !== index);
-  };
+  },
 
-  Room.prototype.getIndexOfUser = function (socketId) {
+  getIndexOfUser: function (socketId: string): number {
     for (let i = 0; i < this.getNumOfUser(); i++) {
-      if (this.users[i].id === socketId) return i;
+      if (this.users[i].socketId === socketId) return i;
     }
     return -1;
-  };
+  },
 
-  Room.prototype.toggleReady = function ({ socketId, isReady }) {
+  getRoomInfo: function (): RoomInfo {
+    return {
+      roomName: this.roomSetting.roomName,
+      numberOfUser: this.getNumOfUser(),
+      maximumOfUser: this.roomSetting.maximumOfUser,
+      totalRound: this.roomSetting.totalRound,
+      isPlaying: this.isPlaying(),
+      isLocked: this.roomSetting.isLocked,
+    };
+  },
+
+  toggleReady: function ({ socketId, isReady }): void {
     const index = this.getIndexOfUser(socketId);
     if (index < 0) return;
     this.users[index].isReady = isReady;
-  };
+  },
 
-  Room.prototype.isReady = function () {
-    return this.users.some(({ id, isReady }) => {
-      if (id !== this.hostId && !isReady) return true;
+  isReady: function (): boolean {
+    return this.users.some(({ socketId, isReady }) => {
+      if (!this.isHost(socketId) && !isReady) return true;
       return false;
     });
-  };
+  },
 
-  Room.prototype.getCurrUserId = function () {
-    return this.users[this.gameState.currOrder].id;
-  };
+  getCurrUserId: function (): string {
+    return this.users[this.gameState.currOrder].socketId;
+  },
 
-  Room.prototype.getCurrOrder = function () {
+  getCurrOrder: function (): number {
     return this.gameState.currOrder;
-  };
+  },
 
-  Room.prototype.getCurrRound = function () {
+  getCurrRound: function (): number {
     return this.gameState.currRound;
-  };
+  },
+};
 
-  return Room;
-})();
+export { Room };
+
+// export const Room = (function () {
+//   function Room({
+//     hostId,
+//     roomSetting,
+//   }: {
+//     hostId: string;
+//     roomSetting: RoomSetting;
+//   }) {
+//     this.hostId = hostId;
+//     this.users = [];
+//     this.gameState = {
+//       isPlaying: false,
+//       game: null,
+//       answer: "",
+//       currOrder: 0,
+//       currRound: 0,
+//     };
+//     this.roomSetting = roomSetting;
+//   }
+//   Room.prototype.getNumOfUser = function (): number {
+//     return this.users.length;
+//   };
+
+//   Room.prototype.isFull = function (): boolean {
+//     return this.gameState.maximumOfUser <= this.getNumOfUser();
+//   };
+
+//   Room.prototype.isDone = function (): boolean {
+//     return this.gameState.currRound > this.roomSetting.totalRound;
+//   };
+
+//   Room.prototype.isPlaying = function (): boolean {
+//     return this.gameState.isPlaying;
+//   };
+
+//   Room.prototype.isCorrect = function (message): boolean {
+//     return this.gameState.answer === message;
+//   };
+
+//   Room.prototype.isHost = function (socketId): boolean {
+//     return socketId === this.hostId;
+//   };
+
+//   Room.prototype.nextTurn = function (val): void {
+//     this.clearGame();
+//     this.gameState.currOrder += val;
+//     if (this.gameState.currOrder === this.getNumOfUser())
+//       this.gameState.currOrder = 0;
+//     ++this.gameState.currRound;
+//   };
+
+//   Room.prototype.startGame = function ({ answer, game }): void {
+//     this.gameState.answer = answer;
+//     this.gameState.isPlaying = true;
+//     this.gameState.game = game;
+//   };
+
+//   Room.prototype.clearGame = function (): void {
+//     if (this.gameState.game) clearTimeout(this.gameState.game);
+//   };
+
+//   Room.prototype.initGameState = function (): void {
+//     this.clearGame();
+//     this.gameState = {
+//       isPlaying: false,
+//       game: null,
+//       answer: "",
+//       currOrder: 0,
+//       currRound: 0,
+//     };
+//   };
+
+//   Room.prototype.addUser = function (user: User): void {
+//     this.users.push(user);
+//   };
+//   Room.prototype.deleteUser = function ({ index }): void {
+//     this.users = this.users.filter((_, idx) => idx !== index);
+//   };
+
+//   Room.prototype.getIndexOfUser = function (socketId): number {
+//     for (let i = 0; i < this.getNumOfUser(); i++) {
+//       if (this.users[i].id === socketId) return i;
+//     }
+//     return -1;
+//   };
+
+//   Room.prototype.getRoomInfo = function (): RoomInfo {
+//     return {
+//       roomName: this.roomSetting.roomName,
+//       numberOfUser: this.getNumOfUser(),
+//       maximumOfUser: this.roomSetting.maximumOfUser,
+//       totalRound: this.roomSetting.totalRound,
+//       isPlaying: this.isPlaying(),
+//       isLocked: this.roomSetting.isLocked,
+//     };
+//   };
+
+//   Room.prototype.toggleReady = function ({ socketId, isReady }): void {
+//     const index = this.getIndexOfUser(socketId);
+//     if (index < 0) return;
+//     this.users[index].isReady = isReady;
+//   };
+
+//   Room.prototype.isReady = function (): boolean {
+//     return this.users.some(({ id, isReady }) => {
+//       if (!this.isHost(id) && !isReady) return true;
+//       return false;
+//     });
+//   };
+
+//   Room.prototype.getCurrUserId = function (): string {
+//     return this.users[this.gameState.currOrder].id;
+//   };
+
+//   Room.prototype.getCurrOrder = function (): number {
+//     return this.gameState.currOrder;
+//   };
+
+//   Room.prototype.getCurrRound = function (): number {
+//     return this.gameState.currRound;
+//   };
+
+//   return Room;
+// })();
 
 // const Room = ({
 //   hostId,
