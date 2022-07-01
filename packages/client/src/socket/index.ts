@@ -14,8 +14,6 @@ const Socket = () => {
     forceNew: true,
   });
 
-  socket.disconnect();
-
   return {
     connect: () => socket.connect(),
     disconnect: () => socket.disconnect(),

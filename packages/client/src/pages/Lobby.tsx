@@ -15,7 +15,6 @@ const Lobby = () => {
 
   useEffect(() => {
     if (socket.current) return;
-    Socket.connect();
     socket.current = Socket.create({ joining });
     return () => {};
   }, []);
