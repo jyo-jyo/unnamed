@@ -11,7 +11,7 @@ import {
   READY_ERROR,
 } from "common";
 
-import { User, Room } from "common";
+import { User, RoomProps } from "common";
 
 const join =
   (socket: Socket) =>
@@ -34,14 +34,17 @@ const join =
 
     socket.on(
       OTHER_USER_LIST,
-      ({ users, room }: { users: User[]; room: typeof Room }) => {
+      ({ users, room }: { users: User[]; room: RoomProps }) => {
         setUsers(users);
         setRoom(room);
       }
     );
 
     socket.on(EXIT_USER, (exitId) => {
-      setUsers((prev: User[]) => prev.filter(({ id }) => id !== exitId));
+      console.log(exitId);
+      setUsers((prev: User[]) =>
+        prev.filter(({ socketId }) => socketId !== exitId)
+      );
     });
 
     socket.on(TOGGLE_READY, (users) => {

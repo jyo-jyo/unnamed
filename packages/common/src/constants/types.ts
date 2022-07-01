@@ -24,7 +24,6 @@ export interface RoomProps {
   users: User[];
   gameState: GameState;
   roomSetting: RoomSetting;
-  isPlaying(): boolean;
 }
 
 export interface Rooms {

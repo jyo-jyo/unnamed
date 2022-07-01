@@ -21,6 +21,7 @@ function Room({
 
 Room.prototype = {
   constructor: Room,
+
   getNumOfUser: function (): number {
     return this.users.length;
   },
@@ -43,22 +44,22 @@ Room.prototype = {
     return socketId === this.hostId;
   },
 
-  nextTurn: function (val): void {
+  clearGame: function (): void {
+    if (this.gameState.game) clearTimeout(this.gameState.game);
+  },
+
+  nextTurn: function (val: number): void {
     this.clearGame();
     this.gameState.currOrder += val;
     if (this.gameState.currOrder === this.getNumOfUser())
       this.gameState.currOrder = 0;
-    ++this.gameState.currRound;
+    this.gameState.currRound++;
   },
 
   startGame: function ({ answer, game }): void {
     this.gameState.answer = answer;
     this.gameState.isPlaying = true;
     this.gameState.game = game;
-  },
-
-  clearGame: function (): void {
-    if (this.gameState.game) clearTimeout(this.gameState.game);
   },
 
   initGameState: function (): void {
@@ -111,7 +112,7 @@ Room.prototype = {
   },
 
   getCurrUserId: function (): string {
-    return this.users[this.gameState.currOrder].socketId;
+    return this.users[this.getCurrOrder()].socketId;
   },
 
   getCurrOrder: function (): number {

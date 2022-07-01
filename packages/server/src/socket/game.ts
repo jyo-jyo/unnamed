@@ -32,6 +32,7 @@ const game = ({ io, socket, rooms }: SocketProps) => {
   const nextTurn = ({ roomCode }) => {
     const room = rooms[roomCode];
     room.nextTurn(1);
+    if (room.isDone()) return endGame({ roomCode, room });
     io.to(roomCode).emit(NEXT_TURN, {
       restTime: GAME_TIME,
       currOrder: room.getCurrOrder(),
@@ -49,10 +50,8 @@ const game = ({ io, socket, rooms }: SocketProps) => {
 
   const timeout = ({ roomCode }) => {
     const room = rooms[roomCode];
-    room.nextTurn(1);
-    if (room.isDone()) return endGame({ roomCode, room });
-    // 다음 턴 처리
     io.to(room.getCurrUserId()).emit(END_MY_TURN);
+    // 다음 턴 처리
     nextTurn({ roomCode });
   };
 
@@ -83,6 +82,7 @@ const game = ({ io, socket, rooms }: SocketProps) => {
       .emit(RECEIVE_CHAT, { id: socket.id, message });
     if (!room.isPlaying() || !room.isCorrect(message)) return;
     // 정답일 경우
+
     timeout({ roomCode });
   });
 
@@ -110,8 +110,8 @@ const game = ({ io, socket, rooms }: SocketProps) => {
         if (room.isDone()) return endGame({ roomCode, room });
         nextTurn({ roomCode });
       }
-      socket.broadcast.to(roomCode).emit(EXIT_USER, socket.id);
     }
+    socket.broadcast.to(roomCode).emit(EXIT_USER, socket.id);
   });
 
   return { io, socket, rooms };
