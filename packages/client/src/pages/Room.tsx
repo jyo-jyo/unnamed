@@ -1,18 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Board } from "@components/Board";
-import { ChatList } from "@components/ChatList";
-import { UserList } from "@components/UserList";
-import useRoomCode from "@hooks/useRoomCode";
-import Socket from "@socket/index";
-import { RoomContainer } from "@pages/Room.style";
-import Type from "common";
-import { RoomHeader } from "@src/components/RoomHeader";
+import { Board, ChatList, UserList, RoomHeader } from "@src/components";
+import Socket from "@socket";
+import { useRoomCode } from "@src/hooks";
+import { RoomContainer } from "./Room.style";
+import { User, RoomProps } from "common";
 
 const Room = () => {
   const nav = useNavigate();
-  const [roomInfo, setRoomInfo] = useState<Type.Room>();
-  const [users, setUsers] = useState<Type.User[]>([]);
+  const [room, setRoom] = useState<RoomProps>();
+  const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const socket = useRef<any>(null);
   const roomCode = useRoomCode();
@@ -26,7 +23,7 @@ const Room = () => {
     if (socket.current) return;
     socket.current = Socket.join({
       setUsers,
-      setRoomInfo,
+      setRoom,
       back,
     });
     socket.current.joinRoom(roomCode);
@@ -38,23 +35,19 @@ const Room = () => {
 
   useEffect(() => {
     if (!isLoading) return;
-    if (users.length === 0) return;
+    if (users.length === 0 || !room) return;
     setIsLoading(false);
-  }, [users]);
+  }, [users, room]);
 
   return isLoading ? (
     <></>
   ) : (
     <RoomContainer>
-      <RoomHeader
-        roomInfo={roomInfo}
-        setRoomInfo={setRoomInfo}
-        setUsers={setUsers}
-      />
+      <RoomHeader room={room} setRoom={setRoom} setUsers={setUsers} />
       <UserList
         users={users}
-        hostId={roomInfo?.hostId}
-        isPlaying={roomInfo?.gameState.isPlaying}
+        hostId={room?.hostId}
+        isPlaying={room.gameState.isPlaying}
       />
       <Board />
       <ChatList />

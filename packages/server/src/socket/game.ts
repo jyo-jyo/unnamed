@@ -13,8 +13,8 @@ import {
   EXIST_ROOM_ERROR,
   EXIT_USER,
 } from "common";
-import { SocketProps } from "@src/@types";
-import { User } from "common";
+
+import { SocketProps } from "@types";
 
 const game = ({ io, socket, rooms }: SocketProps) => {
   const randomAnswer = () => {
@@ -22,89 +22,57 @@ const game = ({ io, socket, rooms }: SocketProps) => {
     return "배고파";
   };
 
-  const initGameState = () => {
-    return {
-      isPlaying: false,
-      game: null,
-      answer: "",
-      currOrder: 0,
-      currRound: 1,
-    };
-  };
-
   const endGame = ({ roomCode, room }) => {
     // TODO: 게임 종료 점수 전송
     io.to(roomCode).emit(END_GAME);
-    room.gameState = initGameState();
+    room.initGameState();
     return;
   };
 
   const nextTurn = ({ roomCode }) => {
     const room = rooms[roomCode];
-    if (room.gameState.currOrder === room.users.length)
-      room.gameState.currOrder = 0;
+    room.nextTurn(1);
+    if (room.isDone()) return endGame({ roomCode, room });
     io.to(roomCode).emit(NEXT_TURN, {
       restTime: GAME_TIME,
-      currOrder: room.gameState.currOrder,
-      currRound: room.gameState.currRound,
+      currOrder: room.getCurrOrder(),
+      currRound: room.getCurrRound(),
     });
     const answer = randomAnswer();
-    room.gameState.answer = answer;
-    console.log(room.gameState.currOrder, room.users[room.gameState.currOrder]);
-    io.to(room.users[room.gameState.currOrder].id).emit(START_MY_TURN, {
+    io.to(room.getCurrUserId()).emit(START_MY_TURN, { answer });
+    room.startGame({
       answer,
+      game: setTimeout(() => {
+        timeout({ roomCode });
+      }, GAME_TIME * 1000),
     });
-    room.gameState.game = setTimeout(() => {
-      timeout({ roomCode });
-    }, GAME_TIME * 1000);
   };
 
   const timeout = ({ roomCode }) => {
     const room = rooms[roomCode];
-    if (room.gameState.game) clearTimeout(room.gameState.game);
-    // game 종료 처리
-    if (++room.gameState.currRound > room.roomSettings.totalRound) {
-      endGame({ roomCode, room });
-      return;
-    }
+    io.to(room.getCurrUserId()).emit(END_MY_TURN);
     // 다음 턴 처리
-    io.to(room.users[room.gameState.currOrder++].id).emit(END_MY_TURN);
     nextTurn({ roomCode });
-  };
-
-  const indexOfUsers = (id: string, users: User[]) => {
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].id === socket.id) return i;
-    }
-    return -1;
   };
 
   socket.on(TOGGLE_READY, ({ roomCode, isReady }) => {
     const room = rooms[roomCode];
-    room.users = room.users.map((user) => {
-      if (user.id === socket.id) user.isReady = isReady;
-      return user;
-    });
+    room.toggleReady({ socketId: socket.id, isReady });
     io.to(roomCode).emit(TOGGLE_READY, room.users);
   });
 
   socket.on(START_GAME, ({ roomCode }) => {
-    if (
-      rooms[roomCode].users.some(({ id, isReady }) => {
-        if (id !== rooms[roomCode].hostId && !isReady) return true;
-        return false;
-      })
-    )
-      return socket.emit(READY_ERROR);
     const room = rooms[roomCode];
+    if (room.isReady()) return socket.emit(READY_ERROR);
     const answer = randomAnswer();
-    room.gameState.answer = answer;
-    room.gameState.isPlaying = true;
-    room.gameState.game = setTimeout(() => {
-      timeout({ roomCode });
-    }, GAME_TIME * 1000);
+    room.startGame({
+      answer,
+      game: setTimeout(() => {
+        timeout({ roomCode });
+      }, GAME_TIME * 1000),
+    });
     io.to(roomCode).emit(START_GAME);
-    io.to(room.users[0].id).emit(START_MY_TURN, { answer });
+    io.to(room.getCurrUserId()).emit(START_MY_TURN, { answer });
   });
 
   socket.on(SEND_CHAT, ({ roomCode, message }) => {
@@ -112,8 +80,9 @@ const game = ({ io, socket, rooms }: SocketProps) => {
     socket.broadcast
       .to(roomCode)
       .emit(RECEIVE_CHAT, { id: socket.id, message });
-    if (!room.gameState.isPlaying || message !== room.gameState.answer) return;
+    if (!room.isPlaying() || !room.isCorrect(message)) return;
     // 정답일 경우
+
     timeout({ roomCode });
   });
 
@@ -121,32 +90,28 @@ const game = ({ io, socket, rooms }: SocketProps) => {
     if (!(roomCode in rooms)) return socket.emit(EXIST_ROOM_ERROR);
     // TODO: 방장권한, 게임이 진행 중인 경우...
     const room = rooms[roomCode];
-    const { currOrder } = room.gameState;
-    const myOrder = indexOfUsers(socket.id, room.users);
+    const currOrder = room.getCurrOrder();
+    const myOrder = room.getIndexOfUser(socket.id);
     socket.leave(roomCode);
-    room.users = room.users.filter(({ id }) => id !== socket.id);
-    if (room.users.length === 0) {
-      if (rooms[roomCode].gameState.game)
-        clearTimeout(rooms[roomCode].gameState.game);
+    room.deleteUser({ index: myOrder });
+    if (room.getNumOfUser() === 0) {
+      room.clearGame();
       delete rooms[roomCode];
       return;
     }
     // 게임이 진행 중인 경우...
-    if (room.gameState.isPlaying) {
+    if (room.isPlaying()) {
       if (currOrder > myOrder) {
         room.gameState.currOrder--;
       } else if (currOrder < myOrder) {
         // room.gameState.currOrder++;
       } else {
-        if (room.gameState.game) clearTimeout(room.gameState.game);
-        if (++room.gameState.currRound > room.roomSettings.totalRound) {
-          endGame({ room, roomCode });
-          return;
-        }
+        room.nextTurn(0);
+        if (room.isDone()) return endGame({ roomCode, room });
         nextTurn({ roomCode });
       }
-      socket.broadcast.to(roomCode).emit(EXIT_USER, socket.id);
     }
+    socket.broadcast.to(roomCode).emit(EXIT_USER, socket.id);
   });
 
   return { io, socket, rooms };

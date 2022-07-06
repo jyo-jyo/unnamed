@@ -1,6 +1,6 @@
 // import "dotenv/config";
 import express from "express";
-import Loader from "@loader/index";
+import Loader from "@src/loader";
 import http from "http";
 
 const PORT = 5000; // constant

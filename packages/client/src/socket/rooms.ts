@@ -1,10 +1,11 @@
 import { Socket } from "socket.io-client";
 import { ROOM_LIST } from "common";
+import { RoomInfo } from "common";
 
-const rooms = (socket: Socket) => (closure: any) => {
-  const { setRooms } = closure;
+const rooms = (socket: Socket) => (functions: { setRooms: Function }) => {
+  const { setRooms } = functions;
 
-  socket.on(ROOM_LIST, (rooms) => {
+  socket.on(ROOM_LIST, (rooms: { [roomCode: string]: RoomInfo }) => {
     setRooms(rooms);
   });
 

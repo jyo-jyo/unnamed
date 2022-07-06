@@ -1,40 +1,43 @@
 import { Socket } from "socket.io-client";
 import { EXIT_ROOM, READY_ERROR, START_GAME, TOGGLE_READY } from "common";
-import { Room } from "common";
+import { RoomProps } from "common";
 
-const waiting = (socket: Socket) => (closure: any) => {
-  const { setUsers, setRoomInfo } = closure;
+const waiting =
+  (socket: Socket) =>
+  (functions: { setUsers: Function; setRoom: Function }) => {
+    const { setUsers, setRoom } = functions;
 
-  socket.on(TOGGLE_READY, (users) => {
-    setUsers(users);
-  });
-
-  socket.on(READY_ERROR, () => {
-    alert(READY_ERROR);
-  });
-
-  socket.on(START_GAME, () => {
-    setRoomInfo((prev: Room) => {
-      const roomInfo = Object.assign({}, prev);
-      roomInfo.gameState.isPlaying = true;
-      return roomInfo;
+    socket.on(TOGGLE_READY, (users) => {
+      setUsers(users);
     });
-  });
 
-  const ready = (roomCode: string, isReady: boolean) =>
-    socket.emit(TOGGLE_READY, { roomCode, isReady });
+    socket.on(READY_ERROR, () => {
+      alert(READY_ERROR);
+    });
 
-  const startGame = (roomCode: string) => socket.emit(START_GAME, { roomCode });
+    socket.on(START_GAME, () => {
+      setRoom((prev: RoomProps) => {
+        const room = Object.assign({}, prev);
+        room.gameState.isPlaying = true;
+        return room;
+      });
+    });
 
-  const exitRoom = (roomCode: string) => {
-    socket.emit(EXIT_ROOM, { roomCode });
+    const ready = (roomCode: string, isReady: boolean) =>
+      socket.emit(TOGGLE_READY, { roomCode, isReady });
+
+    const startGame = (roomCode: string) =>
+      socket.emit(START_GAME, { roomCode });
+
+    const exitRoom = (roomCode: string) => {
+      socket.emit(EXIT_ROOM, { roomCode });
+    };
+
+    const disconnecting = () => {
+      socket.off(TOGGLE_READY);
+    };
+
+    return { ready, exitRoom, startGame, disconnecting };
   };
-
-  const disconnecting = () => {
-    socket.off(TOGGLE_READY);
-  };
-
-  return { ready, exitRoom, startGame, disconnecting };
-};
 
 export default waiting;

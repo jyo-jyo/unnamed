@@ -13,12 +13,8 @@
     "baseUrl": ".",
     "paths": {
       "@src/*": ["src/*"],
-      "@loader/*": ["src/loader/*"],
-      "@socket/*": ["src/socket/*"],
-      "@constants/*": ["src/constants/*"],
       "@api/*": ["src/api/*"],
-      "@utils/*": ["src/utils/*"],
-      "@types/*": ["src/@types/*"]
+      "@types": ["src/@types/index.ts"]
     }
   },
   "include": ["src"],

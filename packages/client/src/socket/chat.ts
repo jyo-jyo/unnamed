@@ -1,8 +1,8 @@
 import { Socket } from "socket.io-client";
 import { RECEIVE_CHAT, SEND_CHAT } from "common";
 
-const chat = (socket: Socket) => (closure: any) => {
-  const { addNewChat } = closure;
+const chat = (socket: Socket) => (functions: { addNewChat: Function }) => {
+  const { addNewChat } = functions;
 
   socket.on(RECEIVE_CHAT, (chatData) => {
     addNewChat(chatData);

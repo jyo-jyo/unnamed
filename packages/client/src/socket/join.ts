@@ -1,9 +1,9 @@
 import { Socket } from "socket.io-client";
 import {
-  EXIST_ROOM_ERROR,
+  NOT_EXIST_ROOM_ERROR,
   FULL_ROOM_ERROR,
   JOIN_ROOM,
-  ENTER_ONE_USER,
+  OTHER_USER_LIST,
   ENTER_OTHER_USER,
   TOGGLE_READY,
   EXIT_USER,
@@ -11,61 +11,69 @@ import {
   READY_ERROR,
 } from "common";
 
-import { User } from "common";
+import { User, RoomProps } from "common";
 
-const join = (socket: Socket) => (closure: any) => {
-  const { setUsers, setRoomInfo, back } = closure;
+const join =
+  (socket: Socket) =>
+  (functions: { setUsers: Function; setRoom: Function; back: Function }) => {
+    const { setUsers, setRoom, back } = functions;
 
-  socket.on(EXIST_ROOM_ERROR, () => {
-    back();
-    alert(EXIST_ROOM_ERROR);
-  });
+    socket.on(NOT_EXIST_ROOM_ERROR, () => {
+      back();
+      alert(NOT_EXIST_ROOM_ERROR);
+    });
 
-  socket.on(FULL_ROOM_ERROR, () => {
-    back();
-    alert(FULL_ROOM_ERROR);
-  });
+    socket.on(FULL_ROOM_ERROR, () => {
+      back();
+      alert(FULL_ROOM_ERROR);
+    });
 
-  socket.on(ENTER_ONE_USER, (user) => {
-    console.log(user);
-    setUsers((prev: User[]) => [...prev, user]);
-  });
+    socket.on(ENTER_OTHER_USER, (user) => {
+      setUsers((prev: User[]) => [...prev, user]);
+    });
 
-  socket.on(ENTER_OTHER_USER, (users, roomInfo) => {
-    setUsers(users);
-    setRoomInfo(roomInfo);
-  });
+    socket.on(
+      OTHER_USER_LIST,
+      ({ users, room }: { users: User[]; room: RoomProps }) => {
+        setUsers(users);
+        setRoom(room);
+      }
+    );
 
-  socket.on(EXIT_USER, (exitId) => {
-    setUsers((prev: User[]) => prev.filter(({ id }) => id !== exitId));
-  });
+    socket.on(EXIT_USER, (exitId) => {
+      console.log(exitId);
+      setUsers((prev: User[]) =>
+        prev.filter(({ socketId }) => socketId !== exitId)
+      );
+    });
 
-  socket.on(TOGGLE_READY, (users) => {
-    setUsers(users);
-  });
+    socket.on(TOGGLE_READY, (users) => {
+      setUsers(users);
+    });
 
-  socket.on(READY_ERROR, () => {
-    alert(READY_ERROR);
-  });
+    socket.on(READY_ERROR, () => {
+      alert(READY_ERROR);
+    });
 
-  const joinRoom = (roomCode: string) => socket.emit(JOIN_ROOM, { roomCode });
+    const joinRoom = (roomCode: string) => socket.emit(JOIN_ROOM, { roomCode });
 
-  const ready = (roomCode: string, isReady: boolean) =>
-    socket.emit(TOGGLE_READY, { roomCode, isReady });
+    const ready = (roomCode: string, isReady: boolean) =>
+      socket.emit(TOGGLE_READY, { roomCode, isReady });
 
-  const startGame = (roomCode: string) => socket.emit(START_GAME, { roomCode });
+    const startGame = (roomCode: string) =>
+      socket.emit(START_GAME, { roomCode });
 
-  const disconnecting = () => {
-    socket.off(EXIST_ROOM_ERROR);
-    socket.off(FULL_ROOM_ERROR);
-    socket.off(ENTER_ONE_USER);
-    socket.off(ENTER_OTHER_USER);
-    socket.off(EXIT_USER);
-    socket.off(TOGGLE_READY);
-    socket.off(READY_ERROR);
+    const disconnecting = () => {
+      socket.off(NOT_EXIST_ROOM_ERROR);
+      socket.off(FULL_ROOM_ERROR);
+      socket.off(OTHER_USER_LIST);
+      socket.off(ENTER_OTHER_USER);
+      socket.off(EXIT_USER);
+      socket.off(TOGGLE_READY);
+      socket.off(READY_ERROR);
+    };
+
+    return { joinRoom, ready, startGame, disconnecting };
   };
-
-  return { joinRoom, ready, startGame, disconnecting };
-};
 
 export default join;

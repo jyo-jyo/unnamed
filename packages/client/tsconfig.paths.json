@@ -3,13 +3,9 @@
     "baseUrl": ".",
     "paths": {
       "@src/*": ["src/*"],
-      "@components/*": ["src/components/*"],
-      "@pages/*": ["src/pages/*"],
-      "@socket/*": ["src/socket/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@constants/*": ["src/constants/*"],
-      "@utils/*": ["src/utils/*"],
-      "@types/*": ["src/@types/*"]
+      "@pages": ["src/pages/index"],
+      "@socket": ["src/socket/index"],
+      "@types": ["src/@types/index"]
     }
   }
 }

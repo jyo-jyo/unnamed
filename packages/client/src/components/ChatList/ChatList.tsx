@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import Socket from "@socket/index";
-import useRoomCode from "@hooks/useRoomCode";
-import { Chat } from "@components/ChatList";
-import { ChatType } from "@src/@types";
+import Socket from "@socket";
+import { useRoomCode } from "@src/hooks";
+import { Chat } from "@src/components";
+import { ChatProps } from "@types";
 
 const ChatList = () => {
   const chatRef = useRef<HTMLInputElement>(null);
-  const [chatList, setChatList] = useState<ChatType[]>([]);
+  const [chatList, setChatList] = useState<ChatProps[]>([]);
   const roomCode = useRoomCode();
   const id = Socket.getSID();
   const socket = useRef<any>(null);
 
-  const addNewChat = (newChat: ChatType) => {
+  const addNewChat = (newChat: ChatProps) => {
     setChatList((prev) => [...prev, newChat]);
   };
 

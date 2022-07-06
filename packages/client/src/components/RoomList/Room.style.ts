@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { COLOR } from "../../constants/style";
+import { COLOR } from "@src/constants";
 
 export const RoomContainer = styled.div<{ isAccessible: boolean }>`
   width: 250px;

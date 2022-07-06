@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Lobby from "@pages/Lobby";
-import Room from "@pages/Room";
+import { Lobby, Room } from "@pages";
 import GlobalStyle from "@src/GlobalStyle";
-function App() {
+
+const App = () => {
   return (
     <>
+      <GlobalStyle />
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Lobby />} />
@@ -14,6 +15,6 @@ function App() {
       </BrowserRouter>
     </>
   );
-}
+};
 
 export default App;
