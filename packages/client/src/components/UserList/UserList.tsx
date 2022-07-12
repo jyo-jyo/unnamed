@@ -7,15 +7,15 @@ const UserList = ({
   isPlaying,
 }: {
   users: User[];
-  hostId: string | undefined | null;
-  isPlaying: boolean | undefined;
+  hostId?: string;
+  isPlaying?: boolean;
 }) => {
   return (
     <>
-      {users.map(({ id, isReady, userName }, index) => (
+      {users.map(({ socketId, isReady, userName }, index) => (
         <UserProfileBox isReady={isReady} key={index}>
           <span>{userName}</span>
-          {!isPlaying && hostId !== id && (
+          {!isPlaying && hostId !== socketId && (
             <span>{isReady ? "준비완" : "노준비"}</span>
           )}
         </UserProfileBox>
