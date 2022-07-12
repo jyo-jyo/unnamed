@@ -9,6 +9,7 @@ import {
   EXIT_USER,
   START_GAME,
   READY_ERROR,
+  BECOME_HOST,
 } from "common";
 
 import { User, RoomProps } from "common";
@@ -40,8 +41,11 @@ const join =
       }
     );
 
+    socket.on(BECOME_HOST, () => {
+      console.log(BECOME_HOST);
+    });
+
     socket.on(EXIT_USER, (exitId) => {
-      console.log(exitId);
       setUsers((prev: User[]) =>
         prev.filter(({ socketId }) => socketId !== exitId)
       );

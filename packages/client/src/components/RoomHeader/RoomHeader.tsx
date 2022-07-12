@@ -53,13 +53,14 @@ const RoomHeader = ({
           <span>{room.roomSetting.roomName}</span>
           <span>{room.roomSetting.isLocked}</span>
         </div>
-        {!room.gameState.isPlaying && room.hostId === Socket.getSID() ? (
-          <button onClick={startGame}>게임시작</button>
-        ) : (
-          <button onClick={toggleReady}>
-            {isReady ? "준비해제" : "준비완료"}
-          </button>
-        )}
+        {!room.gameState.isPlaying &&
+          (room.hostId === Socket.getSID() ? (
+            <button onClick={startGame}>게임시작</button>
+          ) : (
+            <button onClick={toggleReady}>
+              {isReady ? "준비해제" : "준비완료"}
+            </button>
+          ))}
       </RoomHeaderContainer>
     </Header>
   );

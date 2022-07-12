@@ -35,6 +35,8 @@ const drawing =
     });
 
     socket.on(END_GAME, () => {
+      // TODO: 룸의 isPlaying정보 변경 및 그림 그리기 활성화
+      startMyTurn();
       alert(END_GAME);
     });
 

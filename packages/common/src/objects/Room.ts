@@ -73,9 +73,14 @@ Room.prototype = {
     };
   },
 
+  changeHost: function (): void {
+    this.hostId = this.users[0].socketId;
+  },
+
   addUser: function (user: User): void {
     this.users.push(user);
   },
+
   deleteUser: function ({ index }): void {
     this.users = this.users.filter((_, idx) => idx !== index);
   },
@@ -121,6 +126,10 @@ Room.prototype = {
 
   getCurrRound: function (): number {
     return this.gameState.currRound;
+  },
+
+  getHostId: function (): string {
+    return this.hostId;
   },
 };
 
