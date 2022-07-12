@@ -1,5 +1,11 @@
 import { Socket } from "socket.io-client";
-import { EXIT_ROOM, READY_ERROR, START_GAME, TOGGLE_READY } from "common";
+import {
+  EXIT_ROOM,
+  READY_ERROR,
+  START_GAME,
+  TOGGLE_READY,
+  UNDERSTAFFED_ERROR,
+} from "common";
 import { RoomProps } from "common";
 
 const waiting =
@@ -21,6 +27,10 @@ const waiting =
         room.gameState.isPlaying = true;
         return room;
       });
+    });
+
+    socket.on(UNDERSTAFFED_ERROR, () => {
+      alert(UNDERSTAFFED_ERROR);
     });
 
     const ready = (roomCode: string, isReady: boolean) =>
