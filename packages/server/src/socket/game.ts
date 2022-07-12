@@ -10,8 +10,10 @@ import {
   END_MY_TURN,
   TOGGLE_READY,
   EXIT_ROOM,
-  EXIST_ROOM_ERROR,
+  NOT_EXIST_ROOM_ERROR,
+  UNDERSTAFFED_ERROR,
   EXIT_USER,
+  BECOME_HOST,
 } from "common";
 
 import { SocketProps } from "@types";
@@ -64,6 +66,7 @@ const game = ({ io, socket, rooms }: SocketProps) => {
   socket.on(START_GAME, ({ roomCode }) => {
     const room = rooms[roomCode];
     if (room.isReady()) return socket.emit(READY_ERROR);
+    if (room.getNumOfUser() === 1) return socket.emit(UNDERSTAFFED_ERROR);
     const answer = randomAnswer();
     room.startGame({
       answer,
@@ -87,7 +90,7 @@ const game = ({ io, socket, rooms }: SocketProps) => {
   });
 
   socket.on(EXIT_ROOM, ({ roomCode }) => {
-    if (!(roomCode in rooms)) return socket.emit(EXIST_ROOM_ERROR);
+    if (!(roomCode in rooms)) return socket.emit(NOT_EXIST_ROOM_ERROR);
     // TODO: 방장권한, 게임이 진행 중인 경우...
     const room = rooms[roomCode];
     const currOrder = room.getCurrOrder();
@@ -99,16 +102,25 @@ const game = ({ io, socket, rooms }: SocketProps) => {
       delete rooms[roomCode];
       return;
     }
+    // 방장권한
+    if (room.isHost(socket.id)) {
+      room.changeHost();
+      io.to(room.getHostId()).emit(BECOME_HOST);
+    }
     // 게임이 진행 중인 경우...
     if (room.isPlaying()) {
-      if (currOrder > myOrder) {
-        room.gameState.currOrder--;
-      } else if (currOrder < myOrder) {
-        // room.gameState.currOrder++;
+      if (room.getNumOfUser() === 1) {
+        endGame({ roomCode, room });
       } else {
-        room.nextTurn(0);
-        if (room.isDone()) return endGame({ roomCode, room });
-        nextTurn({ roomCode });
+        if (currOrder > myOrder) {
+          room.gameState.currOrder--;
+        } else if (currOrder < myOrder) {
+          // room.gameState.currOrder++;
+        } else {
+          room.nextTurn(0);
+          if (room.isDone()) return endGame({ roomCode, room });
+          nextTurn({ roomCode });
+        }
       }
     }
     socket.broadcast.to(roomCode).emit(EXIT_USER, socket.id);
